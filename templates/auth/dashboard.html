@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Cricket Squad Selector{% endblock %}
+{% block content %}
+
+<div class="container py-5">
+    <!-- Welcome header -->
+    <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
+        <div>
+            <h2 class="fw-bold text-white mb-1">
+                <i class="fa-solid fa-gauge text-accent me-2"></i>My Dashboard
+            </h2>
+            <p class="text-secondary mb-0">Welcome back, <strong class="text-white">{{ current_user.username }}</strong></p>
+        </div>
+        <a href="/squad" class="btn btn-primary-custom rounded-pill px-4">
+            <i class="fa-solid fa-wand-magic-sparkles me-2"></i>Generate New Squad
+        </a>
+    </div>
+
+    <!-- Stats row -->
+    <div class="row g-3 mb-5">
+        <div class="col-6 col-md-3">
+            <div class="stat-box">
+                <span class="stat-number">{{ squads|length }}</span>
+                <span class="stat-label">Saved Squads</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-box">
+                <span class="stat-number">3</span>
+                <span class="stat-label">Countries</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-box">
+                <span class="stat-number">87</span>
+                <span class="stat-label">ML Accuracy %</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-box">
+                <span class="stat-number">11</span>
+                <span class="stat-label">Players/Squad</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Saved Squads -->
+    <h4 class="fw-bold text-white mb-4"><i class="fa-solid fa-floppy-disk text-accent me-2"></i>Saved Squads</h4>
+
+    {% if squads %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for squad in squads %}
+        <div class="col">
+            <div class="card-dark h-100 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="fw-bold text-white mb-1">
+                            {{ squad.country or 'Unknown' }} vs {{ squad.opposition or 'Unknown' }}
+                        </h5>
+                        <span class="text-secondary small">
+                            <i class="fa-solid fa-calendar me-1"></i>
+                            {{ squad.created_at.strftime('%b %d, %Y') if squad.created_at else 'Unknown date' }}
+                        </span>
+                    </div>
+                    <span class="badge rounded-pill px-3 py-2" style="background:#E94560; font-size:0.75rem;">
+                        <i class="fa-solid fa-users me-1"></i>11 Players
+                    </span>
+                </div>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    {% if squad.match_format %}<span class="badge rounded-pill" style="background:#2A2A4A; color:#A0A0B0;">{{ squad.match_format }}</span>{% endif %}
+                    {% if squad.venue_type %}<span class="badge rounded-pill" style="background:#2A2A4A; color:#A0A0B0;">{{ squad.venue_type }}</span>{% endif %}
+                    {% if squad.pitch_type %}<span class="badge rounded-pill" style="background:#2A2A4A; color:#A0A0B0;">{{ squad.pitch_type }}</span>{% endif %}
+                </div>
+                <div class="mt-auto">
+                    <a href="/squad/saved/{{ squad.id }}" class="btn btn-outline-custom btn-sm w-100 rounded-pill">
+                        <i class="fa-solid fa-eye me-1"></i>View Squad
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="card-dark text-center py-5">
+        <i class="fa-solid fa-folder-open fa-3x text-secondary mb-3"></i>
+        <h5 class="text-white mb-2">No saved squads yet</h5>
+        <p class="text-secondary mb-4">Generate a squad and save it to see it here.</p>
+        <a href="/squad" class="btn btn-primary-custom px-5 rounded-pill">
+            <i class="fa-solid fa-robot me-2"></i>Generate My First Squad
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

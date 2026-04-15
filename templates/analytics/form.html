@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Player Form Analysis — Cricket Squad Selector{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="display-6 fw-bold text-white"><i class="fa-solid fa-fire text-accent me-2"></i>Player Form Analysis</h2>
+        <p class="text-secondary">See which players are in peak form right now.</p>
+    </div>
+
+    <!-- Form Distribution Chart -->
+    <div class="card-dark mb-5">
+        <h5 class="fw-bold text-white mb-4">Form Distribution Overview</h5>
+        <canvas id="formDistChart" height="80"></canvas>
+    </div>
+
+    <!-- 3 Columns -->
+    <div class="row g-4">
+
+        <!-- Good Form -->
+        <div class="col-md-4">
+            <div class="card-dark" style="border-top: 3px solid #28a745;">
+                <h5 class="fw-bold mb-1" style="color:#28a745;"><i class="fa-solid fa-arrow-trend-up me-2"></i>Good Form</h5>
+                <p class="text-secondary small mb-3"><strong class="text-white">{{ Good }}</strong> players are in top form right now</p>
+                <div class="d-flex flex-column gap-2" style="max-height:400px; overflow-y:auto;">
+                    {% for p in good_players %}
+                    <a href="/players/{{ p.id }}" class="text-decoration-none">
+                        <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:#12122A; transition:all 0.2s;">
+                            <img src="https://ui-avatars.com/api/?name={{ p.player_name|replace(' ','+') }}&background=1A1A2E&color=28a745&size=28&bold=true"
+                                 class="rounded-circle" style="width:28px;height:28px;">
+                            <div class="flex-grow-1">
+                                <div class="text-white fw-semibold" style="font-size:0.85rem;">{{ p.player_name }}</div>
+                                <div class="text-secondary" style="font-size:0.75rem;">{{ p.country }}</div>
+                            </div>
+                            <span class="text-accent fw-bold small">{{ "%.0f"|format(p.perf_score) }}</span>
+                        </div>
+                    </a>
+                    {% else %}
+                    <p class="text-secondary small">No players in this category.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Average Form -->
+        <div class="col-md-4">
+            <div class="card-dark" style="border-top: 3px solid #FFD700;">
+                <h5 class="fw-bold mb-1" style="color:#FFD700;"><i class="fa-solid fa-minus me-2"></i>Average Form</h5>
+                <p class="text-secondary small mb-3"><strong class="text-white">{{ Average }}</strong> players are in average form</p>
+                <div class="d-flex flex-column gap-2" style="max-height:400px; overflow-y:auto;">
+                    {% for p in avg_players %}
+                    <a href="/players/{{ p.id }}" class="text-decoration-none">
+                        <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:#12122A; transition:all 0.2s;">
+                            <img src="https://ui-avatars.com/api/?name={{ p.player_name|replace(' ','+') }}&background=1A1A2E&color=FFD700&size=28&bold=true"
+                                 class="rounded-circle" style="width:28px;height:28px;">
+                            <div class="flex-grow-1">
+                                <div class="text-white fw-semibold" style="font-size:0.85rem;">{{ p.player_name }}</div>
+                                <div class="text-secondary" style="font-size:0.75rem;">{{ p.country }}</div>
+                            </div>
+                            <span class="text-accent fw-bold small">{{ "%.0f"|format(p.perf_score) }}</span>
+                        </div>
+                    </a>
+                    {% else %}
+                    <p class="text-secondary small">No players in this category.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Poor Form -->
+        <div class="col-md-4">
+            <div class="card-dark" style="border-top: 3px solid #dc3545;">
+                <h5 class="fw-bold mb-1" style="color:#dc3545;"><i class="fa-solid fa-arrow-trend-down me-2"></i>Poor Form</h5>
+                <p class="text-secondary small mb-3"><strong class="text-white">{{ Poor }}</strong> players are in poor form</p>
+                <div class="d-flex flex-column gap-2" style="max-height:400px; overflow-y:auto;">
+                    {% for p in poor_players %}
+                    <a href="/players/{{ p.id }}" class="text-decoration-none">
+                        <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:#12122A; transition:all 0.2s;">
+                            <img src="https://ui-avatars.com/api/?name={{ p.player_name|replace(' ','+') }}&background=1A1A2E&color=dc3545&size=28&bold=true"
+                                 class="rounded-circle" style="width:28px;height:28px;">
+                            <div class="flex-grow-1">
+                                <div class="text-white fw-semibold" style="font-size:0.85rem;">{{ p.player_name }}</div>
+                                <div class="text-secondary" style="font-size:0.75rem;">{{ p.country }}</div>
+                            </div>
+                            <span class="text-accent fw-bold small">{{ "%.0f"|format(p.perf_score) }}</span>
+                        </div>
+                    </a>
+                    {% else %}
+                    <p class="text-secondary small">No players in this category.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fc = {{ form_counts_json|safe }};
+    new Chart(document.getElementById('formDistChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Good Form', 'Average Form', 'Poor Form'],
+            datasets: [{
+                label: 'Players',
+                data: [fc.Good, fc.Average, fc.Poor],
+                backgroundColor: ['#28a745', '#FFD700', '#dc3545'],
+                borderRadius: 6
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { ticks: { color: '#A0A0B0' }, grid: { color: '#2A2A4A' } },
+                x: { ticks: { color: '#A0A0B0' }, grid: { display: false } }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

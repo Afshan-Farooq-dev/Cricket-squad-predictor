@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f1f5f9;
+    }
+    .context-header {
+        background: #1A1A2E;
+        color: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .context-badge {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Player Cards - matched from result.html */
+    .player-card {
+        background: #1A1A2E;
+        border-radius: 1rem;
+        overflow: hidden;
+        height: 100%;
+        border: 1px solid rgba(255,255,255,0.1);
+        display: flex;
+        flex-direction: column;
+    }
+    .p-header {
+        background: rgba(0,0,0,0.3);
+        padding: 1.25rem;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        position: relative;
+    }
+    .p-name {
+        color: white;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin: 0;
+    }
+    .p-body {
+        padding: 1.25rem;
+        flex: 1;
+    }
+    
+    /* Badges */
+    .badge-role-batsman { background: #3b82f6; }
+    .badge-role-bowler { background: #ef4444; }
+    .badge-role-allrounder { background: #8b5cf6; }
+    
+    .badge-form-good { background: #22c55e; }
+    .badge-form-average { background: #eab308; }
+    .badge-form-poor { background: #ef4444; }
+    
+    .p-stat {
+        margin-bottom: 0.5rem;
+        color: #94a3b8;
+        font-size: 0.9rem;
+    }
+    .p-stat strong {
+        color: white;
+    }
+    .p-score {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        color: #E94560;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+    
+</style>
+
+<div class="container py-4">
+    
+    <!-- Top Context Summary -->
+    <div class="context-header">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="fw-bold m-0">{{ squad.country }} <span class="fw-normal text-muted mx-2">vs</span> {{ squad.opposition }}</h2>
+            <span class="badge bg-danger rounded-pill px-3 py-2 border border-light">SAVED SQUAD</span>
+        </div>
+        
+        <div class="d-flex flex-wrap gap-2">
+            <span class="context-badge"><i class="bi bi-trophy"></i> {{ squad.match_format }}</span>
+            <span class="context-badge"><i class="bi bi-geo-alt"></i> {{ squad.venue_type }}</span>
+            <span class="context-badge"><i class="bi bi-water"></i> {{ squad.pitch_type }} Pitch</span>
+            <span class="context-badge"><i class="bi bi-cloud-sun"></i> {{ squad.weather }}</span>
+        </div>
+
+        <div class="mt-3 text-muted" style="font-size: 0.85rem;">
+            Generated on: {{ squad.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+        </div>
+    </div>
+
+    <!-- Main Squad Grid -->
+    <h3 class="fw-bold mb-4 text-dark">Saved Playing XI</h3>
+    
+    <!-- Responsive Grid: 4 desktop, 2 tablet, 1 mobile -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-5 pb-4">
+        {% for player in players %}
+        <div class="col">
+            <div class="player-card">
+                <div class="p-header">
+                    <h4 class="p-name">{{ player.name }}</h4>
+                    
+                    <div class="mt-2">
+                        {% set role_class = 'badge-role-batsman' %}
+                        {% if player.role == 'Bowler' %} {% set role_class = 'badge-role-bowler' %}
+                        {% elif player.role == 'All-Rounder' %} {% set role_class = 'badge-role-allrounder' %}
+                        {% endif %}
+                        <span class="badge {{ role_class }} rounded-pill">{{ player.role }}</span>
+                        
+                        {% set form_class = 'badge-form-average' %}
+                        {% if player.recent_form == 'Good' %} {% set form_class = 'badge-form-good' %}
+                        {% elif player.recent_form == 'Poor' %} {% set form_class = 'badge-form-poor' %}
+                        {% endif %}
+                        <span class="badge {{ form_class }} rounded-pill">Form: {{ player.recent_form }}</span>
+                    </div>
+                </div>
+                
+                <div class="p-body">
+                    {% if player.role in ['Batsman', 'All-Rounder', 'Wicketkeeper'] %}
+                    <div class="p-stat">Avg: <strong>{{ "%.2f"|format(player.average|default(0)|float) }}</strong></div>
+                    <div class="p-stat">SR: <strong>{{ "%.2f"|format(player.strike_rate|default(0)|float) }}</strong></div>
+                    {% endif %}
+                    
+                    {% if player.role in ['Bowler', 'All-Rounder'] %}
+                    <div class="p-stat">Wickets: <strong>{{ player.wickets }}</strong></div>
+                    <div class="p-stat">Economy: <strong>{{ "%.2f"|format(player.economy|default(0)|float) }}</strong></div>
+                    {% endif %}
+                    
+                    <div class="p-score">
+                        Perf Score: {{ "%.1f"|format(player.perf_score|float) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="d-flex justify-content-center pb-5 mb-5">
+        <a href="{{ url_for('auth.dashboard') }}" class="btn btn-outline-dark btn-lg px-5 rounded-pill shadow-sm fw-semibold">Back to Dashboard</a>
+    </div>
+
+</div>
+
+{% endblock %}

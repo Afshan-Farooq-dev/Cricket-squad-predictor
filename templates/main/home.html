@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Cricket Squad Selector — AI-Powered Team Selection{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero-premium position-relative text-center d-flex align-items-center justify-content-center" style="min-height: 85vh; overflow: hidden; background: url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2600') center/cover no-repeat fixed;">
+    <div class="hero-overlay position-absolute w-100 h-100" style="background: linear-gradient(to bottom, rgba(15,15,26,0.6) 0%, rgba(15,15,26,0.95) 100%); top: 0; left: 0; z-index: 1;"></div>
+    
+    <div class="container position-relative z-index-2" style="z-index: 2;">
+        <span class="badge rounded-pill bg-danger-subtle text-danger mb-4 px-3 py-2 fw-semibold animate__animated animate__fadeInDown" style="letter-spacing: 1px; background: rgba(233, 69, 96, 0.2);">POWERED BY AI & ML</span>
+        <h1 class="display-3 fw-bolder text-white mb-3 animate__animated animate__fadeInUp animate__delay-1s" style="text-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+            Select Your <span class="text-accent position-relative" style="background: linear-gradient(135deg, #FF4B2B, #FF416C); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Winning</span> Squad
+        </h1>
+        <p class="lead text-light mb-5 mx-auto animate__animated animate__fadeInUp animate__delay-2s" style="max-width: 700px; font-weight: 300; opacity: 0.9;">
+            Leverage advanced Machine Learning algorithms to analyze pitch conditions, opposition strength, and player form to build the perfect playing XI.
+        </p>
+        
+        <div class="d-flex gap-3 justify-content-center animate__animated animate__fadeInUp animate__delay-3s flex-wrap">
+            <a href="/squad" class="btn btn-primary-custom btn-lg rounded-pill px-5 py-3 shadow-lg hover-lift">
+                <i class="fa-solid fa-robot me-2"></i> Generate Squad
+            </a>
+            <a href="/players" class="btn btn-outline-light btn-lg rounded-pill px-5 py-3 backdrop-blur hover-lift" style="color: white; border-color: rgba(255,255,255,0.4);">
+                <i class="fa-solid fa-users me-2"></i> View Players
+            </a>
+        </div>
+    </div>
+    
+    <!-- Animated scroll indicator -->
+    <div class="position-absolute bottom-0 start-50 translate-middle-x mb-4 z-index-2" style="z-index: 2;">
+        <i class="fa-solid fa-chevron-down text-white fa-2x animate__animated animate__bounce animate__infinite" style="opacity: 0.5;"></i>
+    </div>
+</section>
+        </div>
+        <div class="mt-5 animate__animated animate__fadeIn animate__delay-1s">
+            <a href="#how-it-works" style="color:#A0A0B0;">
+                <i class="fa-solid fa-chevron-down fa-bounce fa-2x"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="py-6 py-5" id="how-it-works" style="background: #0D0D1A;">
+    <div class="container">
+        <h2 class="section-title">How It Works</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card-dark text-center" style="border-top: 3px solid #E94560;">
+                    <div class="mb-3">
+                        <i class="fa-solid fa-sliders fa-3x text-accent"></i>
+                    </div>
+                    <h5 class="fw-bold text-white mb-2">1. Choose Match Details</h5>
+                    <p class="text-secondary mb-0">Select your country, opposition, match format, pitch type, venue and weather conditions.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-dark text-center" style="border-top: 3px solid #0D7377;">
+                    <div class="mb-3">
+                        <i class="fa-solid fa-robot fa-3x" style="color:#0D7377;"></i>
+                    </div>
+                    <h5 class="fw-bold text-white mb-2">2. AI Generates Squad</h5>
+                    <p class="text-secondary mb-0">Our XGBoost model analyses player data and predicts the best playing XI for your conditions.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-dark text-center" style="border-top: 3px solid #FFD700;">
+                    <div class="mb-3">
+                        <i class="fa-solid fa-users fa-3x" style="color:#FFD700;"></i>
+                    </div>
+                    <h5 class="fw-bold text-white mb-2">3. View Your Team</h5>
+                    <p class="text-secondary mb-0">See the full squad with batting order, bowling combination, and performance analysis charts.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS SECTION -->
+<section class="py-5" style="background: #0F0F1A;">
+    <div class="container">
+        <h2 class="section-title">By The Numbers</h2>
+        <div class="row g-4">
+            <div class="col-6 col-md-3">
+                <div class="stat-box">
+                    <span class="stat-number" data-target="{{ total_players }}">0</span>
+                    <span class="stat-label">Total Players</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-box">
+                    <span class="stat-number" data-target="3">0</span>
+                    <span class="stat-label">Countries</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-box">
+                    <span class="stat-number" data-target="3">0</span>
+                    <span class="stat-label">Formats</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-box">
+                    <span class="stat-number" data-target="87">0</span>
+                    <span class="stat-label">ML Accuracy %</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COUNTRIES SECTION -->
+<section class="py-5" style="background: #0D0D1A;">
+    <div class="container">
+        <h2 class="section-title">Supported Countries</h2>
+        <div class="row g-4">
+            {% set countries_data = [
+                ('India', 'https://flagcdn.com/w80/in.png', '#FF9933'),
+                ('England', 'https://flagcdn.com/w80/gb-eng.png', '#003087'),
+                ('Australia', 'https://flagcdn.com/w80/au.png', '#FFD700'),
+                ('Pakistan', 'https://flagcdn.com/w80/pk.png', '#006600')
+            ] %}
+            {% for name, flag_url, color in countries_data %}
+            <div class="col-md-4">
+                <div class="card-dark text-center hover-lift" style="border-top: 3px solid {{ color }};">
+                    <div style="margin-bottom: 1.5rem;"><img src="{{ flag_url }}" alt="{{ name }} flag" style="width: 80px; border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"></div>
+                    <h4 class="fw-bold text-white mb-2">{{ name }}</h4>
+                    <p class="text-secondary mb-3 small">{{ total_players // 3 }}+ players in database</p>
+                    <a href="/players?country={{ name }}" class="btn btn-outline-custom btn-sm px-4 rounded-pill">View Players</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CALL TO ACTION -->
+<section class="py-5 text-center" style="background: linear-gradient(135deg, #1A0A10 0%, #2A0D17 100%);">
+    <div class="container">
+        <h2 class="fw-bold text-white mb-3 display-6">Ready to build your squad?</h2>
+        <p class="text-secondary mb-4">Let the AI pick the perfect playing XI for your next match.</p>
+        <a href="/squad" class="btn btn-primary-custom btn-lg px-5 shadow-lg">
+            <i class="fa-solid fa-wand-magic-sparkles me-2"></i>Generate Squad Now
+        </a>
+    </div>
+</section>
+
+{% endblock %}

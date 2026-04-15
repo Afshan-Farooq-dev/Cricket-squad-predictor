@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block title %}Analytics Dashboard — Cricket Squad Selector{% endblock %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="display-6 fw-bold text-white animate__animated animate__fadeInDown">
+            <i class="fa-solid fa-chart-bar text-accent me-2"></i>Analytics Dashboard
+        </h2>
+        <p class="text-secondary">Comprehensive insights into player performance across the database.</p>
+    </div>
+
+    <!-- Top Stats -->
+    <div class="row g-3 mb-5">
+        <div class="col-6 col-md-3">
+            <div class="stat-box">
+                <span class="stat-number" data-target="{{ total_players }}">0</span>
+                <span class="stat-label">Total Players</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-box">
+                <span class="stat-number" data-target="{{ avg_batting }}">0</span>
+                <span class="stat-label">Avg Batting Avg</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-box">
+                <span class="stat-number" data-target="{{ total_wickets }}">0</span>
+                <span class="stat-label">Total Wickets</span>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-box">
+                <span class="stat-number" data-target="{{ good_form }}">0</span>
+                <span class="stat-label">In Good Form</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card-dark h-100">
+                <h5 class="fw-bold text-white mb-4"><i class="fa-solid fa-earth-asia text-accent me-2"></i>Players by Country</h5>
+                <canvas id="countryDoughnut" height="220"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-dark h-100">
+                <h5 class="fw-bold text-white mb-4"><i class="fa-solid fa-star text-accent me-2"></i>Avg Score by Role</h5>
+                <canvas id="roleBar" height="220"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-dark h-100">
+                <h5 class="fw-bold text-white mb-4"><i class="fa-solid fa-circle-half-stroke text-accent me-2"></i>Form Distribution</h5>
+                <canvas id="formPie" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card-dark">
+                <h5 class="fw-bold text-white mb-4"><i class="fa-solid fa-cricket-bat-ball text-accent me-2"></i>Top 5 Batsmen by Average</h5>
+                <canvas id="topBatsmenBar" height="160"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card-dark">
+                <h5 class="fw-bold text-white mb-4"><i class="fa-solid fa-bullseye text-accent me-2"></i>Top 5 Bowlers by Wickets</h5>
+                <canvas id="topBowlersBar" height="160"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Country Breakdown -->
+    <h4 class="fw-bold text-white mb-4"><i class="fa-solid fa-globe text-accent me-2"></i>Country Breakdown</h4>
+    <div class="row g-3 mb-5">
+        {% set flags = {
+            'India': 'https://flagcdn.com/w40/in.png', 
+            'England': 'https://flagcdn.com/w40/gb-eng.png', 
+            'Australia': 'https://flagcdn.com/w40/au.png', 
+            'Pakistan': 'https://flagcdn.com/w40/pk.png'
+        } %}
+        {% for country, info in country_breakdown.items() %}
+        <div class="col-md-4">
+            <div class="card-dark">
+                <div class="d-flex align-items-center gap-3 mb-3 border-bottom border-secondary pb-3">
+                    <img src="{{ flags.get(country, '') }}" alt="{{ country }}" class="rounded shadow-sm" style="width: 48px; border: 1px solid rgba(255,255,255,0.1);">
+                    <h5 class="fw-bold text-white mb-0">{{ country }}</h5>
+                </div>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <div class="text-secondary small">Total Players</div>
+                        <div class="fw-bold text-accent">{{ info.total }}</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-secondary small">Avg Batting</div>
+                        <div class="fw-bold text-white">{{ info.avg_batting }}</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-secondary small">Avg Economy</div>
+                        <div class="fw-bold text-white">{{ info.avg_economy }}</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-secondary small">Best Player</div>
+                        <div class="fw-bold text-white" style="font-size:0.85rem;">{{ info.best_player }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+const chartDefaults = { ticks: { color: '#A0A0B0' }, grid: { color: '#2A2A4A' } };
+
+document.addEventListener('DOMContentLoaded', function() {
+    const country_counts = {{ country_counts_json|safe }};
+    const role_avgs = {{ role_avg_json|safe }};
+    const form_counts = {{ form_counts_json|safe }};
+    const top_batsmen_names = {{ top_batsmen_names|safe }};
+    const top_batsmen_avgs = {{ top_batsmen_avgs|safe }};
+    const top_bowlers_names = {{ top_bowlers_names|safe }};
+    const top_bowlers_wickets = {{ top_bowlers_wickets|safe }};
+
+    new Chart(document.getElementById('countryDoughnut'), {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(country_counts),
+            datasets: [{ data: Object.values(country_counts), backgroundColor: ['#FF9933', '#003087', '#FFD700'], borderWidth: 2, borderColor: '#1A1A2E' }]
+        },
+        options: { plugins: { legend: { labels: { color: '#A0A0B0' } } } }
+    });
+
+    new Chart(document.getElementById('roleBar'), {
+        type: 'bar',
+        data: {
+            labels: Object.keys(role_avgs),
+            datasets: [{ label: 'Avg Perf Score', data: Object.values(role_avgs), backgroundColor: ['#3b82f6', '#ef4444', '#8b5cf6'], borderRadius: 4 }]
+        },
+        options: { plugins: { legend: { display: false } }, scales: { y: chartDefaults, x: chartDefaults } }
+    });
+
+    new Chart(document.getElementById('formPie'), {
+        type: 'pie',
+        data: {
+            labels: ['Good', 'Average', 'Poor'],
+            datasets: [{ data: [form_counts.Good, form_counts.Average, form_counts.Poor], backgroundColor: ['#28a745', '#FFD700', '#dc3545'], borderWidth: 2, borderColor: '#1A1A2E' }]
+        },
+        options: { plugins: { legend: { labels: { color: '#A0A0B0' } } } }
+    });
+
+    new Chart(document.getElementById('topBatsmenBar'), {
+        type: 'bar',
+        data: {
+            labels: top_batsmen_names,
+            datasets: [{ label: 'Average', data: top_batsmen_avgs, backgroundColor: '#E94560', borderRadius: 4, indexAxis: 'y' }]
+        },
+        options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: chartDefaults, y: { ticks: { color: '#A0A0B0' }, grid: { display: false } } } }
+    });
+
+    new Chart(document.getElementById('topBowlersBar'), {
+        type: 'bar',
+        data: {
+            labels: top_bowlers_names,
+            datasets: [{ label: 'Wickets', data: top_bowlers_wickets, backgroundColor: '#0D7377', borderRadius: 4, indexAxis: 'y' }]
+        },
+        options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: chartDefaults, y: { ticks: { color: '#A0A0B0' }, grid: { display: false } } } }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,379 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f1f5f9;
+    }
+    .context-header {
+        background: #1A1A2E;
+        color: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .context-badge {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.9rem;
+    }
+    .team-score-badge {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        background: #E94560;
+        color: white;
+        padding: 1.5rem;
+        border-radius: 50%;
+        text-align: center;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-shadow: 0 10px 20px rgba(233, 69, 96, 0.4);
+    }
+    .team-score-badge span {
+        font-size: 1.5rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+    .team-score-badge small {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    /* Player Cards */
+    .player-card {
+        background: #1A1A2E;
+        border-radius: 1rem;
+        overflow: hidden;
+        height: 100%;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(255,255,255,0.1);
+        display: flex;
+        flex-direction: column;
+    }
+    .player-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        border-color: #E94560;
+    }
+    .p-header {
+        background: rgba(0,0,0,0.3);
+        padding: 1.25rem;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        position: relative;
+    }
+    .p-name {
+        color: white;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin: 0;
+    }
+    .p-body {
+        padding: 1.25rem;
+        flex: 1;
+    }
+    
+    /* Badges */
+    .badge-role-batsman { background: #3b82f6; }
+    .badge-role-bowler { background: #ef4444; }
+    .badge-role-allrounder { background: #8b5cf6; }
+    
+    .badge-form-good { background: #22c55e; }
+    .badge-form-average { background: #eab308; }
+    .badge-form-poor { background: #ef4444; }
+    
+    .badge-captain {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: #FFD700;
+        color: #000;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(255,215,0,0.4);
+        z-index: 2;
+    }
+    .badge-wk {
+        background: #0ea5e9;
+        margin-left: 0.5rem;
+    }
+    
+    .p-stat {
+        margin-bottom: 0.5rem;
+        color: #94a3b8;
+        font-size: 0.9rem;
+    }
+    .p-stat strong {
+        color: white;
+    }
+    .p-score {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        color: #E94560;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+    
+    /* Analysis Section */
+    .analysis-container {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        margin-top: 3rem;
+    }
+    .stat-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        text-align: center;
+    }
+    .stat-box h3 {
+        color: #1A1A2E;
+        font-weight: 800;
+        margin: 0;
+        font-size: 2rem;
+    }
+    .stat-box p {
+        color: #64748b;
+        margin: 0;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .reserve-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
+    .reserve-card:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        border-color: #94a3b8;
+    }
+</style>
+
+<div class="container py-4">
+    
+    <!-- Top Context Summary -->
+    <div class="context-header">
+        <h2 class="fw-bold mb-3">{{ context.country }} vs {{ context.opposition }}</h2>
+        <div class="d-flex flex-wrap gap-2">
+            <span class="context-badge"><i class="bi bi-trophy"></i> {{ context.match_format }}</span>
+            <span class="context-badge"><i class="bi bi-geo-alt"></i> {{ context.venue_type }}</span>
+            <span class="context-badge"><i class="bi bi-water"></i> {{ context.pitch_type }} Pitch</span>
+            <span class="context-badge"><i class="bi bi-cloud-sun"></i> {{ context.weather }}</span>
+        </div>
+        
+        <div class="team-score-badge">
+            <span>{{ "%.1f"|format(result.team_score|float) }}</span>
+            <small>Strength</small>
+        </div>
+    </div>
+
+    <!-- Main Squad Grid -->
+    <h3 class="fw-bold mb-4 text-dark">Playing XI</h3>
+    
+    <!-- Responsive Grid: 4 desktop, 2 tablet, 1 mobile -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        {% for player in result.players %}
+        <div class="col">
+            <div class="player-card">
+                <div class="p-header">
+                    {% if player.name == result.captain %}
+                    <div class="badge-captain" title="Captain">C</div>
+                    {% endif %}
+                    <h4 class="p-name">{{ player.name }}
+                        {% if player.name == result.wicketkeeper %}
+                        <span class="badge badge-wk rounded-pill px-2 py-1 text-white" style="font-size: 0.6rem;">WK</span>
+                        {% endif %}
+                    </h4>
+                    
+                    <div class="mt-2">
+                        {% set role_class = 'badge-role-batsman' %}
+                        {% if player.role == 'Bowler' %} {% set role_class = 'badge-role-bowler' %}
+                        {% elif player.role == 'All-Rounder' %} {% set role_class = 'badge-role-allrounder' %}
+                        {% endif %}
+                        <span class="badge {{ role_class }} rounded-pill">{{ player.role }}</span>
+                        
+                        {% set form_class = 'badge-form-average' %}
+                        {% if player.recent_form == 'Good' %} {% set form_class = 'badge-form-good' %}
+                        {% elif player.recent_form == 'Poor' %} {% set form_class = 'badge-form-poor' %}
+                        {% endif %}
+                        <span class="badge {{ form_class }} rounded-pill">Form: {{ player.recent_form }}</span>
+                    </div>
+                </div>
+                
+                <div class="p-body">
+                    {% if player.role in ['Batsman', 'All-Rounder', 'Wicketkeeper'] %}
+                    <div class="p-stat">Avg: <strong>{{ "%.2f"|format(player.average|default(0)|float) }}</strong></div>
+                    <div class="p-stat">SR: <strong>{{ "%.2f"|format(player.strike_rate|default(0)|float) }}</strong></div>
+                    {% endif %}
+                    
+                    {% if player.role in ['Bowler', 'All-Rounder'] %}
+                    <div class="p-stat">Wickets: <strong>{{ player.wickets }}</strong></div>
+                    <div class="p-stat">Economy: <strong>{{ "%.2f"|format(player.economy|default(0)|float) }}</strong></div>
+                    {% endif %}
+                    
+                    <div class="p-score">
+                        Perf Score: {{ "%.1f"|format(player.perf_score|float) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Team Analysis Section -->
+    <div class="analysis-container">
+        <h3 class="fw-bold mb-4 text-dark">Team Analysis</h3>
+        
+        <div class="row g-3 mb-5">
+            <div class="col-md-4">
+                <div class="stat-box">
+                    {% set bats = result.players|selectattr("role", "equalto", "Batsman")|list|length %}
+                    <h3>{{ bats }}</h3>
+                    <p>Batsmen</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-box">
+                    {% set bowls = result.players|selectattr("role", "equalto", "Bowler")|list|length %}
+                    <h3>{{ bowls }}</h3>
+                    <p>Bowlers</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-box">
+                    {% set alls = result.players|selectattr("role", "equalto", "All-Rounder")|list|length %}
+                    <h3>{{ alls }}</h3>
+                    <p>All-Rounders</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-list-ol text-primary"></i> Batting Order</h5>
+                <ol class="list-group list-group-numbered list-group-flush border rounded">
+                    {% for p in result.batting_order %}
+                    <li class="list-group-item bg-transparent">{{ p }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+            <div class="col-md-6 mb-4">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-bullseye text-danger"></i> Bowling Combination</h5>
+                <ol class="list-group list-group-numbered list-group-flush border rounded">
+                    {% for p in result.bowling_combo %}
+                    <li class="list-group-item bg-transparent">{{ p }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h5 class="fw-bold text-dark mb-3">Player Performance Overview</h5>
+            <canvas id="performanceChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <!-- Reserves Section -->
+    <div class="mt-5">
+        <h3 class="fw-bold mb-4 text-dark">Reserves</h3>
+        <div class="row g-3">
+            {% for res in result.reserves %}
+            <div class="col-md-6 col-lg-3">
+                <div class="reserve-card">
+                    <h6 class="fw-bold text-dark m-0">{{ res.name }}</h6>
+                    <small class="text-muted d-block mb-2">{{ res.role }}</small>
+                    <span class="badge bg-light text-dark border">Score: {{ "%.1f"|format(res.perf_score|float) }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex justify-content-center gap-3 mt-5 mb-5 pb-5">
+        <a href="{{ url_for('squad.generate') }}" class="btn btn-outline-dark btn-lg px-5 rounded-pill shadow-sm fw-semibold">Generate Again</a>
+        
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="/squad/save">
+            <input type="hidden" name="country" value="{{ context.country }}">
+            <input type="hidden" name="opposition" value="{{ context.opposition }}">
+            <input type="hidden" name="match_format" value="{{ context.match_format }}">
+            <input type="hidden" name="venue_type" value="{{ context.venue_type }}">
+            <input type="hidden" name="pitch_type" value="{{ context.pitch_type }}">
+            <input type="hidden" name="weather" value="{{ context.weather }}">
+            <input type="hidden" name="players_json" value="{{ players_json }}">
+            <button type="submit" class="btn btn-danger btn-lg px-5 rounded-pill shadow-sm fw-semibold" style="background: #E94560; border: none;">Save Squad to Dashboard</button>
+        </form>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        
+        const labels = [
+            {% for p in result.players %}
+                "{{ p.name }}"{{ '' if loop.last else ',' }}
+            {% endfor %}
+        ];
+        
+        const dataScores = [
+            {% for p in result.players %}
+                {{ p.perf_score }}{{ '' if loop.last else ',' }}
+            {% endfor %}
+        ];
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Performance Score',
+                    data: dataScores,
+                    backgroundColor: '#E94560',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock %}

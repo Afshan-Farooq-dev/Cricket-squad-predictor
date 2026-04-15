@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .generation-header {
+        background: radial-gradient(circle at top right, #1e293b, #0f172a);
+        color: white;
+        border-radius: 1rem;
+        padding: 4rem 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        text-align: center;
+    }
+    .accent-text {
+        color: #e94560;
+    }
+    .form-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 3rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid #e2e8f0;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #334155;
+    }
+    .form-select {
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        border: 1px solid #cbd5e1;
+        transition: all 0.3s ease;
+    }
+    .form-select:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+    }
+    .format-hint {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-top: 0.25rem;
+        display: block;
+    }
+    .btn-generate {
+        background: #e94560;
+        border: none;
+        color: white;
+        padding: 1rem 2.5rem;
+        font-size: 1.25rem;
+        border-radius: 0.5rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        width: 100%;
+        margin-top: 1rem;
+    }
+    .btn-generate:hover {
+        background: #d6334f;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(233, 69, 96, 0.3);
+    }
+    .spinner-border {
+        display: none;
+        width: 1.5rem;
+        height: 1.5rem;
+        margin-right: 0.5rem;
+    }
+    /* Simple recent squads UI */
+    .recent-squad-glass {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
+    .recent-squad-glass:hover {
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border-color: #cbd5e1;
+    }
+</style>
+
+<div class="container py-4">
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show shadow-sm" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="generation-header">
+        <h1 class="display-4 fw-bold mb-3">Generate Your Squad</h1>
+        <p class="lead mb-0 opacity-75">Machine Learning powered cricket squad combination predictions.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="form-card mb-5">
+                <form method="POST" action="/squad" id="squadForm">
+                    <div class="row g-4">
+                        
+                        <!-- Country -->
+                        <div class="col-md-6">
+                            <label for="country" class="form-label">Your Country</label>
+                            <select class="form-select" id="country" name="country" required>
+                                <option value="" disabled selected>Select country...</option>
+                                {% for c in countries %}
+                                    <option value="{{ c }}">{{ c }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Opposition -->
+                        <div class="col-md-6">
+                            <label for="opposition" class="form-label">Opposition</label>
+                            <select class="form-select" id="opposition" name="opposition" required>
+                                <option value="" disabled selected>Select opposition...</option>
+                                {% for o in oppositions %}
+                                    <option value="{{ o }}">{{ o }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Match Format -->
+                        <div class="col-md-6">
+                            <label for="match_format" class="form-label">Match Format</label>
+                            <select class="form-select" id="match_format" name="match_format" required onchange="updateFormatHint()">
+                                <option value="" disabled selected>Select format...</option>
+                                {% for f in formats %}
+                                    <option value="{{ f }}">{{ f }}</option>
+                                {% endfor %}
+                            </select>
+                            <small id="formatHint" class="format-hint">Optimize player selection based on game pace.</small>
+                        </div>
+                        
+                        <!-- Venue Type -->
+                        <div class="col-md-6">
+                            <label for="venue_type" class="form-label">Venue Advantage</label>
+                            <select class="form-select" id="venue_type" name="venue_type" required>
+                                <option value="" disabled selected>Select venue type...</option>
+                                {% for v in venues %}
+                                    <option value="{{ v }}">{{ v }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Pitch Type -->
+                        <div class="col-md-6">
+                            <label for="pitch_type" class="form-label">Pitch Conditions</label>
+                            <select class="form-select" id="pitch_type" name="pitch_type" required>
+                                <option value="" disabled selected>Select pitch...</option>
+                                {% for p in pitches %}
+                                    <option value="{{ p }}">{{ p }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Weather -->
+                        <div class="col-md-6">
+                            <label for="weather" class="form-label">Weather Conditions</label>
+                            <select class="form-select" id="weather" name="weather" required>
+                                <option value="" disabled selected>Select weather...</option>
+                                {% for w in weathers %}
+                                    <option value="{{ w }}">{{ w }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-12 mt-5">
+                            <button type="submit" class="btn btn-generate" id="submitBtn">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" id="loadingSpinner"></span>
+                                <span id="btnText">Generate Optimal Squad</span>
+                            </button>
+                        </div>
+                        
+                    </div>
+                </form>
+            </div>
+
+
+            {% if current_user.is_authenticated %}
+            <h4 class="fw-bold mb-4 text-dark"><i class="bi bi-clock-history me-2"></i> Recent Squads</h4>
+            {% if recent_squads %}
+                <div class="row g-3">
+                    {% for squad in recent_squads %}
+                    <div class="col-md-4">
+                        <a href="/squad/saved/{{ squad.id }}" class="text-decoration-none text-dark">
+                            <div class="recent-squad-glass text-center h-100">
+                                <span class="badge bg-primary mb-2">{{ squad.match_format }}</span>
+                                <h6 class="fw-bold m-0">{{ squad.country }} <span class="text-muted fw-normal">vs</span> {{ squad.opposition }}</h6>
+                                <small class="text-muted">{{ squad.created_at.strftime('%Y-%m-%d') if squad.created_at else '' }}</small>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">You haven't saved any squads yet.</p>
+            {% endif %}
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateFormatHint() {
+        const val = document.getElementById('match_format').value;
+        const hint = document.getElementById('formatHint');
+        if (val === 'ODI') hint.textContent = 'Balances stamina and aggressive strokeplay.';
+        else if (val === 'T20') hint.textContent = 'Prioritizes high strike rates and boundary hitters.';
+        else if (val === 'Test') hint.textContent = 'Prioritizes defense, high average, and endurance.';
+        else hint.textContent = '';
+    }
+
+    document.getElementById('squadForm').addEventListener('submit', function() {
+        const btn = document.getElementById('submitBtn');
+        const spinner = document.getElementById('loadingSpinner');
+        const text = document.getElementById('btnText');
+        
+        btn.classList.add('disabled');
+        spinner.style.display = 'inline-block';
+        text.textContent = 'Analyzing Variables...';
+    });
+</script>
+
+{% endblock %}

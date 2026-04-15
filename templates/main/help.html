@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Help & About — Cricket Squad Selector{% endblock %}
+{% block content %}
+
+<!-- HERO -->
+<section class="py-5 text-center" style="background: url('https://images.unsplash.com/photo-1593341646782-e0b495cff86d?w=800&q=80') center/cover; position:relative; min-height:300px; display:flex; align-items:center; justify-content:center;">
+    <div style="position:absolute;inset:0;background:rgba(0,0,0,0.75);"></div>
+    <div style="position:relative;z-index:2;">
+        <h1 class="display-5 fw-bold text-white mb-2 animate__animated animate__fadeInDown">Help &amp; About</h1>
+        <p class="text-secondary lead">Learn how Cricket Squad Selector uses ML to predict your best team.</p>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row g-5">
+
+        <!-- About Project -->
+        <div class="col-12">
+            <div class="card-dark">
+                <h3 class="fw-bold text-white mb-3"><i class="fa-solid fa-circle-info text-accent me-2"></i>About the Project</h3>
+                <p class="text-secondary">Cricket Squad Selector is an MSc Final Year Project that uses Machine Learning to help cricket teams select the best possible playing XI based on match conditions. The system analyses historical player performance data to generate optimal squads for any match scenario.</p>
+                <p class="text-secondary mb-0">The application covers four international teams — India, England, Australia, and Pakistan — across all three formats: ODI, T20, and Test matches.</p>
+            </div>
+        </div>
+
+        <!-- How ML Works -->
+        <div class="col-md-6">
+            <div class="card-dark h-100">
+                <h4 class="fw-bold text-white mb-4"><i class="fa-solid fa-robot text-accent me-2"></i>How the ML Works</h4>
+                <div class="mb-3">
+                    <span class="badge badge-role-batsman mb-2">XGBoost Model</span>
+                    <p class="text-secondary small">Used for squad selection — identifies the best 11 players based on match conditions like pitch type, weather, and opposition strength.</p>
+                </div>
+                <div>
+                    <span class="badge badge-role-bowler mb-2">Random Forest Model</span>
+                    <p class="text-secondary small mb-0">Used for performance scoring — evaluates each player's current form and assigns a performance score from 0-100.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- How to Use -->
+        <div class="col-md-6">
+            <div class="card-dark h-100">
+                <h4 class="fw-bold text-white mb-4"><i class="fa-solid fa-list-ol text-accent me-2"></i>How to Use</h4>
+                <ol class="text-secondary" style="line-height:2;">
+                    <li>Create an account or log in.</li>
+                    <li>Go to <strong class="text-white">Generate Squad</strong>.</li>
+                    <li>Select your country, opposition, format, pitch, venue and weather.</li>
+                    <li>Click <strong class="text-white">Generate</strong> — the model picks your XI.</li>
+                    <li>View the full squad with batting order, bowling combo, and charts.</li>
+                    <li>Save your squad to your dashboard for future reference.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="col-12">
+            <h3 class="fw-bold text-white mb-4"><i class="fa-solid fa-question-circle text-accent me-2"></i>Frequently Asked Questions</h3>
+            <div class="accordion accordion-dark" id="faqAccordion">
+                {% set faqs = [
+                    ('Is this real player data?', 'The dataset is based on historical cricket statistics that have been processed and augmented for ML training purposes.'),
+                    ('Can I add my own players?', 'Yes! If you are logged in, you can add new players via the Players section.'),
+                    ('How accurate is the ML model?', 'The XGBoost model achieves approximately 87% accuracy in squad prediction tasks on the test dataset.'),
+                    ('What is a performance score?', 'The performance score (0-100) is calculated by the Random Forest model based on a player\'s batting average, strike rate, wickets, economy, and recent form.'),
+                    ('Can I save multiple squads?', 'Yes, logged-in users can save unlimited squads and view them from their dashboard.')
+                ] %}
+                {% for q, a in faqs %}
+                {% set i = loop.index0 %}
+                <div class="accordion-item mb-2">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button {{ 'collapsed' if i > 0 else '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#faq{{ i }}">
+                            {{ q }}
+                        </button>
+                    </h2>
+                    <div id="faq{{ i }}" class="accordion-collapse collapse {{ 'show' if i == 0 else '' }}" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">{{ a }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="col-12">
+            <div class="card-dark">
+                <h4 class="fw-bold text-white mb-4"><i class="fa-solid fa-layer-group text-accent me-2"></i>Tech Stack</h4>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for tech in ['Flask', 'SQLite', 'SQLAlchemy', 'XGBoost', 'Random Forest', 'Bootstrap 5', 'Chart.js', 'Python', 'Jinja2'] %}
+                    <span class="badge rounded-pill px-3 py-2" style="background:#2A2A4A; color:#A0A0B0; font-size:.85rem;">{{ tech }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

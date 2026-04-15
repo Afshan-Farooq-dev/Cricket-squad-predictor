@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Add Player — Cricket Squad Selector{% endblock %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card-dark">
+                <h3 class="fw-bold text-white mb-1"><i class="fa-solid fa-user-plus text-accent me-2"></i>Add New Player</h3>
+                <p class="text-secondary mb-4">Add a player to the database. All numeric fields must be non-negative.</p>
+
+                <form method="POST" action="/players/new" id="addPlayerForm" novalidate>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label text-secondary">Player Name *</label>
+                            <input type="text" class="form-control form-control-dark" name="player_name" required placeholder="Full name">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-secondary">Country *</label>
+                            <select class="form-select form-select-dark" name="country" required>
+                                <option value="" disabled selected>Select...</option>
+                                {% for c in countries %}
+                                <option value="{{ c }}">{{ c }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-secondary">Role *</label>
+                            <select class="form-select form-select-dark" name="player_role" required>
+                                <option value="" disabled selected>Select...</option>
+                                {% for r in roles %}
+                                <option value="{{ r }}">{{ r }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-12"><hr style="border-color:#2A2A4A;"><p class="text-secondary small fw-semibold mb-0">Match Statistics</p></div>
+
+                        <div class="col-md-3">
+                            <label class="form-label text-secondary">Matches</label>
+                            <input type="number" class="form-control form-control-dark" name="matches" min="0" value="0">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-secondary">Runs</label>
+                            <input type="number" class="form-control form-control-dark" name="runs" min="0" step="0.1" value="0">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-secondary">Average</label>
+                            <input type="number" class="form-control form-control-dark" name="average" min="0" step="0.01" value="0">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-secondary">Strike Rate</label>
+                            <input type="number" class="form-control form-control-dark" name="strike_rate" min="0" step="0.01" value="0">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-secondary">Wickets</label>
+                            <input type="number" class="form-control form-control-dark" name="wickets" min="0" value="0">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-secondary">Economy</label>
+                            <input type="number" class="form-control form-control-dark" name="economy" min="0" step="0.01" value="0">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-secondary">Centuries</label>
+                            <input type="number" class="form-control form-control-dark" name="centuries" min="0" value="0">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-secondary">Fifties</label>
+                            <input type="number" class="form-control form-control-dark" name="fifties" min="0" value="0">
+                        </div>
+
+                        <div class="col-12 d-flex gap-3 mt-2">
+                            <button type="submit" class="btn btn-primary-custom px-5">
+                                <i class="fa-solid fa-plus me-2"></i>Add Player
+                            </button>
+                            <a href="/players" class="btn btn-outline-custom px-4">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

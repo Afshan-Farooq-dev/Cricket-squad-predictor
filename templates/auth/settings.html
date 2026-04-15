@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Settings — Cricket Squad Selector{% endblock %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <h2 class="fw-bold text-white mb-1">
+                <i class="fa-solid fa-gear text-accent me-2"></i>Account Settings
+            </h2>
+            <p class="text-secondary mb-5">Update your username or change your password below.</p>
+
+            <!-- Change Username -->
+            <div class="card-dark mb-4">
+                <h5 class="fw-bold text-white mb-4"><i class="fa-solid fa-user me-2 text-accent"></i>Change Username</h5>
+                <form method="POST" action="{{ url_for('auth.settings') }}">
+                    <input type="hidden" name="action" value="update_username">
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small">New Username</label>
+                        <input type="text" class="form-control form-control-dark" name="username"
+                               value="{{ current_user.username }}" required placeholder="Enter new username">
+                    </div>
+                    <button type="submit" class="btn btn-primary-custom px-4 rounded-pill">
+                        <i class="fa-solid fa-check me-1"></i>Save Username
+                    </button>
+                </form>
+            </div>
+
+            <!-- Change Password -->
+            <div class="card-dark">
+                <h5 class="fw-bold text-white mb-4"><i class="fa-solid fa-lock me-2 text-accent"></i>Change Password</h5>
+                <form method="POST" action="{{ url_for('auth.settings') }}">
+                    <input type="hidden" name="action" value="update_password">
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small">Current Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control form-control-dark" id="current_password"
+                                   name="current_password" required placeholder="Your current password">
+                            <button class="btn" type="button" data-pwd-toggle="current_password"
+                                style="background:#12122A; border:1px solid #2A2A4A; border-left:none; color:#A0A0B0;">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small">New Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control form-control-dark" id="new_password"
+                                   name="new_password" required placeholder="New password">
+                            <button class="btn" type="button" data-pwd-toggle="new_password"
+                                style="background:#12122A; border:1px solid #2A2A4A; border-left:none; color:#A0A0B0;">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-secondary small">Confirm New Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control form-control-dark" id="confirm_password"
+                                   name="confirm_password" required placeholder="Repeat new password">
+                            <button class="btn" type="button" data-pwd-toggle="confirm_password"
+                                style="background:#12122A; border:1px solid #2A2A4A; border-left:none; color:#A0A0B0;">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary-custom px-4 rounded-pill">
+                        <i class="fa-solid fa-lock me-1"></i>Update Password
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

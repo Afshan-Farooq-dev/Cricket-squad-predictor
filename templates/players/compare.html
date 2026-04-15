@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block title %}Player Comparison — Cricket Squad Selector{% endblock %}
+{% block content %}
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+        <h2 class="display-6 fw-bold text-white"><i class="fa-solid fa-scale-balanced text-accent me-2"></i>Player Comparison</h2>
+        <p class="text-secondary">Select two players to compare them head-to-head.</p>
+    </div>
+
+    <!-- Player Selectors -->
+    <form method="GET" action="/players/compare" class="mb-5">
+        <div class="card-dark">
+            <div class="row g-4 align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label text-secondary">Player 1</label>
+                    <select class="form-select form-select-dark" name="p1" required>
+                        <option value="" disabled {{ 'selected' if not p1 }}>Select player 1...</option>
+                        {% for player in all_players %}
+                        <option value="{{ player.id }}" {{ 'selected' if p1 and p1.id == player.id }}>{{ player.player_name }} ({{ player.country }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 text-center">
+                    <div style="font-size:2rem; color:#E94560; font-weight:800;">VS</div>
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label text-secondary">Player 2</label>
+                    <select class="form-select form-select-dark" name="p2" required>
+                        <option value="" disabled {{ 'selected' if not p2 }}>Select player 2...</option>
+                        {% for player in all_players %}
+                        <option value="{{ player.id }}" {{ 'selected' if p2 and p2.id == player.id }}>{{ player.player_name }} ({{ player.country }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12 text-center">
+                    <button type="submit" class="btn btn-primary-custom px-5 rounded-pill">
+                        <i class="fa-solid fa-scale-balanced me-2"></i>Compare Players
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {% if p1 and p2 %}
+    <!-- Head Section -->
+    <div class="card-dark mb-4">
+        <div class="row text-center g-4">
+            <div class="col-md-5">
+                <img src="https://ui-avatars.com/api/?name={{ p1.player_name|replace(' ','+') }}&background=1A1A2E&color=E94560&size=96&bold=true"
+                     class="rounded-circle border border-2 mb-3" style="border-color:#E94560 !important; width:96px; height:96px;">
+                <h4 class="fw-bold text-white">{{ p1.player_name }}</h4>
+                <div class="text-secondary">{{ p1.country }}</div>
+                {% if p1.player_role == 'Batsman' %}<span class="badge-role-batsman">Batsman</span>
+                {% elif p1.player_role == 'Bowler' %}<span class="badge-role-bowler">Bowler</span>
+                {% else %}<span class="badge-role-allrounder">All-Rounder</span>{% endif %}
+            </div>
+            <div class="col-md-2 d-flex align-items-center justify-content-center">
+                <div style="font-size:2.5rem; font-weight:800; color:#E94560;">VS</div>
+            </div>
+            <div class="col-md-5">
+                <img src="https://ui-avatars.com/api/?name={{ p2.player_name|replace(' ','+') }}&background=1A1A2E&color=0D7377&size=96&bold=true"
+                     class="rounded-circle border border-2 mb-3" style="border-color:#0D7377 !important; width:96px; height:96px;">
+                <h4 class="fw-bold text-white">{{ p2.player_name }}</h4>
+                <div class="text-secondary">{{ p2.country }}</div>
+                {% if p2.player_role == 'Batsman' %}<span class="badge-role-batsman">Batsman</span>
+                {% elif p2.player_role == 'Bowler' %}<span class="badge-role-bowler">Bowler</span>
+                {% else %}<span class="badge-role-allrounder">All-Rounder</span>{% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="card-dark mb-4">
+        <h5 class="fw-bold text-white mb-4"><i class="fa-solid fa-table text-accent me-2"></i>Stats Comparison</h5>
+        <div class="table-responsive">
+            <table class="table table-dark-custom">
+                <thead>
+                    <tr>
+                        <th>{{ p1.player_name }}</th>
+                        <th class="text-center text-secondary">Stat</th>
+                        <th class="text-end">{{ p2.player_name }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set stats = [
+                        ('Matches', p1.matches, p2.matches, true),
+                        ('Runs', p1.runs|int, p2.runs|int, true),
+                        ('Average', p1.average, p2.average, true),
+                        ('Strike Rate', p1.strike_rate, p2.strike_rate, true),
+                        ('Wickets', p1.wickets, p2.wickets, true),
+                        ('Economy', p1.economy, p2.economy, false),
+                        ('Centuries', p1.centuries, p2.centuries, true),
+                        ('Fifties', p1.fifties, p2.fifties, true),
+                        ('Perf Score', p1.perf_score, p2.perf_score, true)
+                    ] %}
+                    {% for label, v1, v2, higher_wins in stats %}
+                    {% set p1_wins = (v1 > v2 and higher_wins) or (v1 < v2 and not higher_wins) %}
+                    {% set p2_wins = (v2 > v1 and higher_wins) or (v2 < v1 and not higher_wins) %}
+                    <tr>
+                        <td class="{{ 'text-success fw-bold' if p1_wins else '' }}">
+                            {{ "%.2f"|format(v1|float) if v1 is float else v1 }}
+                            {% if p1_wins %}<i class="fa-solid fa-trophy ms-1 text-warning"></i>{% endif %}
+                        </td>
+                        <td class="text-center text-secondary small fw-semibold">{{ label }}</td>
+                        <td class="text-end {{ 'text-success fw-bold' if p2_wins else '' }}">
+                            {% if p2_wins %}<i class="fa-solid fa-trophy me-1 text-warning"></i>{% endif %}
+                            {{ "%.2f"|format(v2|float) if v2 is float else v2 }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card-dark">
+                <h5 class="fw-bold text-white mb-4">Radar Comparison</h5>
+                <canvas id="radarChart" height="220"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card-dark">
+                <h5 class="fw-bold text-white mb-4">Key Stats Bar Chart</h5>
+                <canvas id="barChart" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- ML Verdict -->
+    <div class="card-dark text-center py-4">
+        <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-robot text-accent me-2"></i>ML Verdict</h5>
+        {% if p1.perf_score > p2.perf_score %}
+        <div><span class="badge bg-success rounded-pill px-4 py-2 fs-6">{{ p1.player_name }} is the stronger player</span></div>
+        <p class="text-secondary mt-2 mb-0">Performance score: <strong class="text-accent">{{ "%.1f"|format(p1.perf_score) }}</strong> vs {{ "%.1f"|format(p2.perf_score) }}</p>
+        {% elif p2.perf_score > p1.perf_score %}
+        <div><span class="badge bg-success rounded-pill px-4 py-2 fs-6">{{ p2.player_name }} is the stronger player</span></div>
+        <p class="text-secondary mt-2 mb-0">Performance score: <strong class="text-accent">{{ "%.1f"|format(p2.perf_score) }}</strong> vs {{ "%.1f"|format(p1.perf_score) }}</p>
+        {% else %}
+        <div><span class="badge bg-warning text-dark rounded-pill px-4 py-2 fs-6">Both players are equally matched!</span></div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if p1 and p2 %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const radarCtx = document.getElementById('radarChart');
+    new Chart(radarCtx, {
+        type: 'radar',
+        data: {
+            labels: ['Average', 'Strike Rate', 'Wickets', 'Economy (inv)', 'Centuries', 'Perf Score'],
+            datasets: [
+                {
+                    label: '{{ p1.player_name }}',
+                    data: [Math.min({{ p1.average }},100), Math.min({{ p1.strike_rate }},100), Math.min({{ p1.wickets * 2 }},100), Math.max(0,100 - {{ p1.economy * 10 }}), Math.min({{ p1.centuries * 5 }},100), {{ p1.perf_score }}],
+                    backgroundColor: 'rgba(233,69,96,0.2)', borderColor: '#E94560', pointBackgroundColor: '#E94560'
+                },
+                {
+                    label: '{{ p2.player_name }}',
+                    data: [Math.min({{ p2.average }},100), Math.min({{ p2.strike_rate }},100), Math.min({{ p2.wickets * 2 }},100), Math.max(0,100 - {{ p2.economy * 10 }}), Math.min({{ p2.centuries * 5 }},100), {{ p2.perf_score }}],
+                    backgroundColor: 'rgba(13,115,119,0.2)', borderColor: '#0D7377', pointBackgroundColor: '#0D7377'
+                }
+            ]
+        },
+        options: {
+            scales: { r: { ticks: { color: '#A0A0B0', backdropColor: 'transparent' }, grid: { color: '#2A2A4A' }, pointLabels: { color: '#A0A0B0' } } },
+            plugins: { legend: { labels: { color: '#A0A0B0' } } }
+        }
+    });
+
+    new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Average', 'Strike Rate', 'Wickets', 'Perf Score'],
+            datasets: [
+                { label: '{{ p1.player_name }}', data: [{{ p1.average }}, {{ p1.strike_rate }}, {{ p1.wickets }}, {{ p1.perf_score }}], backgroundColor: '#E94560', borderRadius: 4 },
+                { label: '{{ p2.player_name }}', data: [{{ p2.average }}, {{ p2.strike_rate }}, {{ p2.wickets }}, {{ p2.perf_score }}], backgroundColor: '#0D7377', borderRadius: 4 }
+            ]
+        },
+        options: {
+            plugins: { legend: { labels: { color: '#A0A0B0' } } },
+            scales: { y: { ticks: { color: '#A0A0B0' }, grid: { color: '#2A2A4A' } }, x: { ticks: { color: '#A0A0B0' }, grid: { display: false } } }
+        }
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

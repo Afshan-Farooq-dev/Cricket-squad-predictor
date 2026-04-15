@@ -1,0 +1,358 @@
+/* =============================================
+   Cricket Squad Selector — Main CSS
+   Global Design System
+   ============================================= */
+
+/* ---------- Base ---------- */
+:root {
+    --bg-primary: #0F0F1A;
+    --bg-card: #1A1A2E;
+    --accent-red: #E94560;
+    --accent-teal: #0D7377;
+    --text-primary: #FFFFFF;
+    --text-secondary: #A0A0B0;
+    --success: #28a745;
+    --warning: #FFD700;
+    --bg-nav: #0D0D1A;
+    --border-card: #2A2A4A;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-card); }
+::-webkit-scrollbar-thumb { background: var(--accent-red); border-radius: 3px; }
+
+/* ---------- Navbar ---------- */
+#mainNavbar {
+    background-color: var(--bg-nav) !important;
+    border-bottom: 1px solid var(--accent-red);
+    padding: 0.75rem 0;
+}
+
+.navbar-brand {
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+}
+
+#mainNavbar .nav-link {
+    color: var(--text-secondary) !important;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    transition: color 0.3s ease;
+    border-radius: 6px;
+}
+
+#mainNavbar .nav-link:hover {
+    color: var(--text-primary) !important;
+}
+
+.nav-active {
+    color: var(--accent-red) !important;
+    border-bottom: 2px solid var(--accent-red);
+}
+
+.navbar-toggler-icon {
+    filter: invert(1);
+}
+
+/* ---------- Cards ---------- */
+.card-dark {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.card-dark:hover {
+    border-color: var(--accent-red);
+    box-shadow: 0 4px 20px rgba(233, 69, 96, 0.2);
+    transform: translateY(-3px);
+}
+
+/* ---------- Buttons ---------- */
+.btn-primary-custom {
+    background: var(--accent-red);
+    border: none;
+    color: white;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-primary-custom:hover {
+    background: #c73652;
+    box-shadow: 0 6px 16px rgba(233, 69, 96, 0.35);
+    color: white;
+}
+
+.btn-outline-custom {
+    background: transparent;
+    border: 1px solid var(--accent-red);
+    color: var(--accent-red);
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-outline-custom:hover {
+    background: var(--accent-red);
+    color: white;
+}
+
+/* ---------- Role Badges ---------- */
+.badge-role-batsman  { background: #0D47A1; color: white; padding: 0.35em 0.7em; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.badge-role-bowler   { background: #B71C1C; color: white; padding: 0.35em 0.7em; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.badge-role-allrounder { background: #6A1B9A; color: white; padding: 0.35em 0.7em; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+
+/* ---------- Form Badges ---------- */
+.badge-form-good    { background: #28a745; color: white; padding: 0.35em 0.7em; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.badge-form-average { background: #FFD700; color: #000; padding: 0.35em 0.7em; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.badge-form-poor    { background: #dc3545; color: white; padding: 0.35em 0.7em; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+
+/* ---------- Stat Boxes ---------- */
+.stat-box {
+    background: var(--bg-card);
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    border-top: 3px solid var(--accent-red);
+    transition: all 0.3s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 20px rgba(233, 69, 96, 0.15);
+}
+
+.stat-box .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-red);
+    display: block;
+}
+
+.stat-box .stat-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ---------- Hero Section ---------- */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.72);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* ---------- Section Titles ---------- */
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: var(--accent-red);
+    margin: 0.75rem auto 0;
+    border-radius: 2px;
+}
+
+/* ---------- Footer ---------- */
+.footer {
+    background: var(--bg-nav);
+    border-top: 1px solid var(--accent-red);
+    padding: 3rem 0 1.5rem;
+    color: var(--text-secondary);
+}
+
+.footer-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+    color: var(--accent-red);
+}
+
+/* ---------- Loading Spinner Overlay ---------- */
+#loadingOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 15, 26, 0.85);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---------- Form Controls Dark Theme ---------- */
+.form-control-dark,
+.form-select-dark {
+    background-color: #12122A;
+    border: 1px solid #2A2A4A;
+    color: white;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+.form-control-dark:focus,
+.form-select-dark:focus {
+    background-color: #12122A;
+    border-color: var(--accent-red);
+    color: white;
+    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.2);
+}
+
+.form-control-dark::placeholder {
+    color: #5A5A7A;
+}
+
+/* ---------- Performance Bar ---------- */
+.perf-bar-bg {
+    background: #2A2A4A;
+    border-radius: 4px;
+    height: 6px;
+    overflow: hidden;
+}
+
+.perf-bar-fill {
+    background: linear-gradient(90deg, var(--accent-teal), var(--accent-red));
+    border-radius: 4px;
+    height: 100%;
+    transition: width 0.6s ease;
+}
+
+/* ---------- Player Card ---------- */
+.player-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.player-card:hover {
+    border-color: var(--accent-red);
+    box-shadow: 0 4px 20px rgba(233, 69, 96, 0.2);
+    transform: translateY(-3px);
+}
+
+/* ---------- Alerts Override ---------- */
+.alert {
+    border-radius: 8px;
+    border: none;
+}
+
+/* ---------- Table Dark ---------- */
+.table-dark-custom {
+    color: var(--text-primary);
+    background: var(--bg-card);
+}
+
+.table-dark-custom th {
+    background: #12122A;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    border-color: #2A2A4A;
+}
+
+.table-dark-custom td {
+    border-color: #2A2A4A;
+    vertical-align: middle;
+}
+
+/* ---------- Accordion Dark ---------- */
+.accordion-dark .accordion-item {
+    background: var(--bg-card);
+    border: 1px solid #2A2A4A;
+    border-radius: 8px !important;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+}
+
+.accordion-dark .accordion-button {
+    background: var(--bg-card);
+    color: white;
+    font-weight: 600;
+    border: none;
+}
+
+.accordion-dark .accordion-button:not(.collapsed) {
+    background: #12122A;
+    color: var(--accent-red);
+    box-shadow: none;
+}
+
+.accordion-dark .accordion-button::after {
+    filter: invert(1);
+}
+
+.accordion-dark .accordion-body {
+    background: #12122A;
+    color: var(--text-secondary);
+}
+
+/* ---------- Rank Medals ---------- */
+.rank-gold   { color: #FFD700; }
+.rank-silver { color: #C0C0C0; }
+.rank-bronze { color: #CD7F32; }
+
+/* ---------- Misc Helpers ---------- */
+.text-accent { color: var(--accent-red) !important; }
+.text-teal   { color: var(--accent-teal) !important; }
+.bg-dark-card { background: var(--bg-card) !important; }
+.border-accent { border-color: var(--accent-red) !important; }
+
+.hover-lift {
+    transition: transform 0.3s ease;
+}
+.hover-lift:hover {
+    transform: translateY(-5px);
+}

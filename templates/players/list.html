@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}All Players — Cricket Squad Selector{% endblock %}
+{% block content %}
+
+<!-- Hero -->
+<section class="py-5 text-center" style="background: url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=1600&q=80') center/cover; position:relative; min-height:250px; display:flex; align-items:center; justify-content:center;">
+    <div style="position:absolute;inset:0;background:rgba(0,0,0,0.75);"></div>
+    <div style="position:relative;z-index:2;">
+        <h1 class="display-5 fw-bold text-white mb-2 animate__animated animate__fadeInDown"><i class="fa-solid fa-users text-accent me-3"></i>All Players</h1>
+        <p class="text-secondary">Browse, filter, and search the full player database.</p>
+    </div>
+</section>
+
+<div class="container py-4">
+
+    <!-- Filter Bar -->
+    <form method="GET" action="/players" class="mb-4" id="filterForm">
+        <div class="card-dark">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label text-secondary small">Search by name</label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background:#12122A; border-color:#2A2A4A; color:#A0A0B0;"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input type="text" class="form-control form-control-dark" id="liveSearch" name="search" placeholder="Search players..." value="{{ search }}">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label text-secondary small">Country</label>
+                    <select class="form-select form-select-dark" name="country">
+                        <option value="">All Countries</option>
+                        {% for c in countries %}
+                        <option value="{{ c }}" {{ 'selected' if selected_country == c }}>{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label text-secondary small">Role</label>
+                    <select class="form-select form-select-dark" name="role">
+                        <option value="">All Roles</option>
+                        {% for r in roles %}
+                        <option value="{{ r }}" {{ 'selected' if selected_role == r }}>{{ r }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label text-secondary small">Sort by</label>
+                    <select class="form-select form-select-dark" name="sort">
+                        <option value="player_name" {{ 'selected' if sort_by == 'player_name' }}>Name</option>
+                        <option value="perf_score" {{ 'selected' if sort_by == 'perf_score' }}>Performance</option>
+                        <option value="average" {{ 'selected' if sort_by == 'average' }}>Average</option>
+                        <option value="wickets" {{ 'selected' if sort_by == 'wickets' }}>Wickets</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary-custom w-100"><i class="fa-solid fa-filter me-1"></i>Filter</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Results Count + Add Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <p class="text-secondary mb-0">Showing <strong class="text-white">{{ players|length }}</strong> player{{ 's' if players|length != 1 }}</p>
+        {% if current_user.is_authenticated %}
+        <a href="/players/new" class="btn btn-primary-custom btn-sm px-4 rounded-pill">
+            <i class="fa-solid fa-plus me-1"></i>Add Player
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Player Grid -->
+    {% if players %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4" id="playerGrid">
+        {% for player in players %}
+        <div class="col player-card-wrapper" data-name="{{ player.player_name }}">
+            <div class="player-card">
+                <!-- Avatar -->
+                <div class="text-center pt-4 pb-2">
+                    <img src="https://ui-avatars.com/api/?name={{ player.player_name|replace(' ', '+') }}&background=1A1A2E&color=E94560&size=80&bold=true"
+                         class="rounded-circle border border-2"
+                         style="border-color:#E94560 !important; width:80px; height:80px;"
+                         alt="{{ player.player_name }}">
+                </div>
+                <div class="p-3 text-center flex-grow-1 d-flex flex-column">
+                    <h6 class="fw-bold text-white mb-1">{{ player.player_name }}</h6>
+                    <div class="text-secondary small mb-2">{{ player.country }}</div>
+                    <div class="mb-2">
+                        {% if player.player_role == 'Batsman' %}<span class="badge-role-batsman">Batsman</span>
+                        {% elif player.player_role == 'Bowler' %}<span class="badge-role-bowler">Bowler</span>
+                        {% else %}<span class="badge-role-allrounder">All-Rounder</span>{% endif %}
+                    </div>
+                    <div class="text-secondary small mb-2">
+                        {% if player.player_role == 'Bowler' %}
+                            <i class="fa-solid fa-bullseye text-accent"></i> {{ player.wickets }} wkts
+                        {% else %}
+                            <i class="fa-solid fa-cricket-bat-ball text-accent"></i> Avg: {{ "%.1f"|format(player.average) }}
+                        {% endif %}
+                    </div>
+                    <!-- Perf Bar -->
+                    <div class="perf-bar-bg mb-2">
+                        <div class="perf-bar-fill" style="width:{{ player.perf_score }}%;"></div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-secondary" style="font-size:0.75rem;">Score: <strong class="text-accent">{{ "%.1f"|format(player.perf_score) }}</strong></span>
+                        {% if player.recent_form == 'Good' %}<span class="badge-form-good">Good</span>
+                        {% elif player.recent_form == 'Average' %}<span class="badge-form-average">Average</span>
+                        {% else %}<span class="badge-form-poor">Poor</span>{% endif %}
+                    </div>
+                    <a href="/players/{{ player.id }}" class="btn btn-outline-custom btn-sm w-100 mt-auto">View Profile</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fa-solid fa-user-slash fa-4x text-secondary mb-4"></i>
+        <h4 class="text-white">No players found</h4>
+        <p class="text-secondary">Try adjusting your filters or search query.</p>
+        <a href="/players" class="btn btn-outline-custom px-4 rounded-pill">Clear Filters</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
