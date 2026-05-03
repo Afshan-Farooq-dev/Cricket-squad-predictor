@@ -88,6 +88,12 @@
                         {% if player.player_role == 'Batsman' %}<span class="badge-role-batsman">Batsman</span>
                         {% elif player.player_role == 'Bowler' %}<span class="badge-role-bowler">Bowler</span>
                         {% else %}<span class="badge-role-allrounder">All-Rounder</span>{% endif %}
+                        
+                        {% if player.status == 'Active' %}
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success" style="font-size: 0.7rem; margin-left: 5px;">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary" style="font-size: 0.7rem; margin-left: 5px;">Retired</span>
+                        {% endif %}
                     </div>
                     <div class="text-secondary small mb-2">
                         {% if player.player_role == 'Bowler' %}

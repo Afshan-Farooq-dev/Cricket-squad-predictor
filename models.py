@@ -25,6 +25,7 @@ class Player(db.Model):
     player_name    = db.Column(db.String(100), nullable=False)
     country        = db.Column(db.String(50), nullable=False)
     player_role    = db.Column(db.String(50), nullable=False)   # Batsman / Bowler / All-Rounder
+    status         = db.Column(db.String(20), default='Active') # Active / Retired
     matches        = db.Column(db.Integer, default=0)
     runs           = db.Column(db.Float, default=0)
     average        = db.Column(db.Float, default=0)

@@ -52,14 +52,14 @@ def generate_squad(country, match_format, opposition, venue_type,
         try:
             from flask import current_app
             if current_app:
-                db_players = Player.query.filter_by(country=country).all()
+                db_players = Player.query.filter_by(country=country, status='Active').all()
             else:
                 raise Exception("No current app")
         except Exception:
             # Fallback to local app creation
             app = create_app()
             with app.app_context():
-                db_players = Player.query.filter_by(country=country).all()
+                db_players = Player.query.filter_by(country=country, status='Active').all()
 
         if not db_players:
             return _fallback_squad(country)

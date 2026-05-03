@@ -40,7 +40,7 @@ PLAYERS = [
     dict(player_name="Jason Roy",         country="England", player_role="Batsman",     matches=100, runs=3452,  average=37.96, strike_rate=108.80,wickets=0,   economy=0.00, centuries=7,  fifties=22, recent_form="Poor",    perf_score=71.3),
     # Bowlers
     dict(player_name="James Anderson",   country="England", player_role="Bowler",      matches=194, runs=430,   average=28.73, strike_rate=39.76, wickets=269, economy=4.57, centuries=0,  fifties=0,  recent_form="Average", perf_score=83.8),
-    dict(player_name="Stuart Broad",     country="England", player_role="Bowler",      matches=121, runs=530,   average=22.73, strike_rate=34.98, wickets=169, economy=5.14, centuries=0,  fifties=0,  recent_form="Good",    perf_score=85.1),
+    dict(player_name="Stuart Broad",     country="England", player_role="Bowler",      status="Retired", matches=121, runs=530,   average=22.73, strike_rate=34.98, wickets=169, economy=5.14, centuries=0,  fifties=0,  recent_form="Good",    perf_score=85.1),
     dict(player_name="Jofra Archer",     country="England", player_role="Bowler",      matches=18,  runs=60,    average=18.50, strike_rate=19.62, wickets=30,  economy=5.37, centuries=0,  fifties=0,  recent_form="Average", perf_score=75.4),
     dict(player_name="Mark Wood",        country="England", player_role="Bowler",      matches=67,  runs=165,   average=12.50, strike_rate=22.31, wickets=102, economy=5.70, centuries=0,  fifties=0,  recent_form="Good",    perf_score=81.5),
     dict(player_name="Moeen Ali",        country="England", player_role="All-Rounder", matches=205, runs=3222,  average=27.12, strike_rate=95.94, wickets=195, economy=5.67, centuries=1,  fifties=19, recent_form="Average", perf_score=80.9),
@@ -63,7 +63,7 @@ PLAYERS = [
     dict(player_name="Pat Cummins",      country="Australia", player_role="All-Rounder", matches=102, runs=756,   average=26.96, strike_rate=95.24, wickets=210, economy=5.18, centuries=0,  fifties=1,  recent_form="Good",    perf_score=92.8),
     dict(player_name="Adam Zampa",       country="Australia", player_role="Bowler",      matches=91,  runs=72,    average=10.28, strike_rate=48.65, wickets=156, economy=5.35, centuries=0,  fifties=0,  recent_form="Average", perf_score=82.3),
     dict(player_name="Mitchell Marsh",   country="Australia", player_role="All-Rounder", matches=104, runs=2591,  average=31.58, strike_rate=107.01,wickets=66,  economy=5.81, centuries=3,  fifties=15, recent_form="Average", perf_score=80.7),
-    dict(player_name="Aaron Finch",      country="Australia", player_role="Batsman",     matches=145, runs=5401,  average=38.58, strike_rate=88.77, wickets=1,   economy=7.00, centuries=17, fifties=30, recent_form="Poor",    perf_score=74.2),
+    dict(player_name="Aaron Finch",      country="Australia", player_role="Batsman",     status="Retired", matches=145, runs=5401,  average=38.58, strike_rate=88.77, wickets=1,   economy=7.00, centuries=17, fifties=30, recent_form="Poor",    perf_score=74.2),
     dict(player_name="Matthew Wade",     country="Australia", player_role="Batsman",     matches=97,  runs=1765,  average=26.34, strike_rate=105.80,wickets=0,   economy=0.00, centuries=1,  fifties=10, recent_form="Average", perf_score=69.5),
     dict(player_name="Cameron Green",    country="Australia", player_role="All-Rounder", matches=42,  runs=1096,  average=35.35, strike_rate=108.09,wickets=44,  economy=5.64, centuries=2,  fifties=6,  recent_form="Good",    perf_score=81.4),
     dict(player_name="Nathan Lyon",      country="Australia", player_role="Bowler",      matches=175, runs=527,   average=11.42, strike_rate=36.48, wickets=237, economy=4.80, centuries=0,  fifties=0,  recent_form="Good",    perf_score=85.9),
@@ -90,11 +90,9 @@ PLAYERS = [
 
 def seed():
     with app.app_context():
-        existing = Player.query.count()
-        if existing > 0:
-            print(f"Database already has {existing} players. Clearing and re-seeding...")
-            Player.query.delete()
-            db.session.commit()
+        print("Recreating database schema...")
+        db.drop_all()
+        db.create_all()
 
         for data in PLAYERS:
             player = Player(**data)

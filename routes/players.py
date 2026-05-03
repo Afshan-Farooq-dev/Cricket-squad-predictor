@@ -90,6 +90,7 @@ def add_player():
             player_name  = request.form.get('player_name'),
             country      = request.form.get('country'),
             player_role  = request.form.get('player_role'),
+            status       = request.form.get('status', 'Active'),
             matches      = int(request.form.get('matches', 0)),
             runs         = float(request.form.get('runs', 0)),
             average      = float(request.form.get('average', 0)),
