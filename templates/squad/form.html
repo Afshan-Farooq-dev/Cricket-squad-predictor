@@ -79,6 +79,25 @@
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         border-color: #cbd5e1;
     }
+    /* Custom Error Styles */
+    .validation-error {
+        display: none;
+        background: linear-gradient(135deg, #ff4b2b, #ff416c);
+        color: white;
+        border-radius: 0.75rem;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 10px 20px rgba(255, 75, 43, 0.2);
+        animation: slideInDown 0.4s ease forwards;
+        border: none;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    @keyframes slideInDown {
+        from { transform: translateY(-20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    .validation-error i { font-size: 1.25rem; }
 </style>
 
 <div class="container py-4">
@@ -98,6 +117,11 @@
     <div class="generation-header">
         <h1 class="display-4 fw-bold mb-3">Generate Your Squad</h1>
         <p class="lead mb-0 opacity-75">Machine Learning powered cricket squad combination predictions.</p>
+    </div>
+
+    <div id="jsError" class="validation-error">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="jsErrorMessage"></span>
     </div>
 
     <div class="row justify-content-center">
@@ -220,7 +244,22 @@
         else hint.textContent = '';
     }
 
-    document.getElementById('squadForm').addEventListener('submit', function() {
+    document.getElementById('squadForm').addEventListener('submit', function(e) {
+        const country = document.getElementById('country').value;
+        const opposition = document.getElementById('opposition').value;
+        const errorDiv = document.getElementById('jsError');
+        const errorMsg = document.getElementById('jsErrorMessage');
+
+        if (country === opposition) {
+            e.preventDefault();
+            errorMsg.textContent = `Error: ${country} cannot play against itself. Please choose a different opposition.`;
+            errorDiv.style.display = 'flex';
+            window.scrollTo({ top: errorDiv.offsetTop - 100, behavior: 'smooth' });
+            return false;
+        } else {
+            errorDiv.style.display = 'none';
+        }
+
         const btn = document.getElementById('submitBtn');
         const spinner = document.getElementById('loadingSpinner');
         const text = document.getElementById('btnText');

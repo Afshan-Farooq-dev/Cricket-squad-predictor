@@ -58,6 +58,11 @@ def player_profile(player_id):
 def compare():
     p1_id = request.args.get('p1', type=int)
     p2_id = request.args.get('p2', type=int)
+
+    if p1_id and p2_id and p1_id == p2_id:
+        flash('Cannot compare a player with themselves. Please select two different players.', 'warning')
+        return redirect(url_for('players.compare'))
+
     p1 = Player.query.get(p1_id) if p1_id else None
     p2 = Player.query.get(p2_id) if p2_id else None
     all_players = Player.query.order_by(Player.player_name).all()

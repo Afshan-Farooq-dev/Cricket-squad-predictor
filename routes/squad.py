@@ -37,6 +37,10 @@ def generate():
         pitch_type = request.form.get('pitch_type')
         weather = request.form.get('weather')
 
+        if country == opposition:
+            flash(f'Cannot generate squad: {country} cannot play against {opposition}. Please select a different opposition.', 'danger')
+            return redirect(url_for('squad.generate'))
+
         result = generate_squad(
             country=country,
             match_format=match_format,

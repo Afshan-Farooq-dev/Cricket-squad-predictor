@@ -9,7 +9,20 @@
     </div>
 
     <!-- Player Selectors -->
-    <form method="GET" action="/players/compare" class="mb-5">
+    <form method="GET" action="/players/compare" class="mb-5" id="compareForm">
+        <div id="compareError" class="alert alert-danger d-none border-0 shadow-lg mb-4" style="background: linear-gradient(135deg, #E94560, #C31432); color: white; border-radius: 1rem; animation: shake 0.5s ease;">
+            <div class="d-flex align-items-center p-2">
+                <i class="fa-solid fa-triangle-exclamation me-3 fs-4"></i>
+                <span id="compareErrorMessage" class="fw-bold"></span>
+            </div>
+        </div>
+        <style>
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        </style>
         <div class="card-dark">
             <div class="row g-4 align-items-end">
                 <div class="col-md-5">
@@ -149,48 +162,76 @@
 {% endblock %}
 
 {% block scripts %}
-{% if p1 and p2 %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const radarCtx = document.getElementById('radarChart');
-    new Chart(radarCtx, {
-        type: 'radar',
-        data: {
-            labels: ['Average', 'Strike Rate', 'Wickets', 'Economy (inv)', 'Centuries', 'Perf Score'],
-            datasets: [
-                {
-                    label: '{{ p1.player_name }}',
-                    data: [Math.min({{ p1.average }},100), Math.min({{ p1.strike_rate }},100), Math.min({{ p1.wickets * 2 }},100), Math.max(0,100 - {{ p1.economy * 10 }}), Math.min({{ p1.centuries * 5 }},100), {{ p1.perf_score }}],
-                    backgroundColor: 'rgba(233,69,96,0.2)', borderColor: '#E94560', pointBackgroundColor: '#E94560'
-                },
-                {
-                    label: '{{ p2.player_name }}',
-                    data: [Math.min({{ p2.average }},100), Math.min({{ p2.strike_rate }},100), Math.min({{ p2.wickets * 2 }},100), Math.max(0,100 - {{ p2.economy * 10 }}), Math.min({{ p2.centuries * 5 }},100), {{ p2.perf_score }}],
-                    backgroundColor: 'rgba(13,115,119,0.2)', borderColor: '#0D7377', pointBackgroundColor: '#0D7377'
-                }
-            ]
-        },
-        options: {
-            scales: { r: { ticks: { color: '#A0A0B0', backdropColor: 'transparent' }, grid: { color: '#2A2A4A' }, pointLabels: { color: '#A0A0B0' } } },
-            plugins: { legend: { labels: { color: '#A0A0B0' } } }
-        }
-    });
+    const compareForm = document.getElementById('compareForm');
+    if (compareForm) {
+        compareForm.addEventListener('submit', function(e) {
+            const p1 = document.querySelector('select[name="p1"]').value;
+            const p2 = document.querySelector('select[name="p2"]').value;
+            const errorDiv = document.getElementById('compareError');
+            const errorMsg = document.getElementById('compareErrorMessage');
 
-    new Chart(document.getElementById('barChart'), {
-        type: 'bar',
-        data: {
-            labels: ['Average', 'Strike Rate', 'Wickets', 'Perf Score'],
-            datasets: [
-                { label: '{{ p1.player_name }}', data: [{{ p1.average }}, {{ p1.strike_rate }}, {{ p1.wickets }}, {{ p1.perf_score }}], backgroundColor: '#E94560', borderRadius: 4 },
-                { label: '{{ p2.player_name }}', data: [{{ p2.average }}, {{ p2.strike_rate }}, {{ p2.wickets }}, {{ p2.perf_score }}], backgroundColor: '#0D7377', borderRadius: 4 }
-            ]
-        },
-        options: {
-            plugins: { legend: { labels: { color: '#A0A0B0' } } },
-            scales: { y: { ticks: { color: '#A0A0B0' }, grid: { color: '#2A2A4A' } }, x: { ticks: { color: '#A0A0B0' }, grid: { display: false } } }
-        }
-    });
+            if (p1 && p2 && p1 === p2) {
+                e.preventDefault();
+                errorMsg.textContent = 'Oops! You cannot compare a player with themselves. Please select two different players.';
+                errorDiv.classList.remove('d-none');
+                errorDiv.style.animation = 'none';
+                errorDiv.offsetHeight; /* trigger reflow */
+                errorDiv.style.animation = 'shake 0.5s ease';
+                window.scrollTo({ top: errorDiv.offsetTop - 100, behavior: 'smooth' });
+                return false;
+            } else {
+                errorDiv.classList.add('d-none');
+            }
+        });
+    }
+
+    {% if p1 and p2 %}
+    const radarCtx = document.getElementById('radarChart');
+    if (radarCtx) {
+        new Chart(radarCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Average', 'Strike Rate', 'Wickets', 'Economy (inv)', 'Centuries', 'Perf Score'],
+                datasets: [
+                    {
+                        label: '{{ p1.player_name }}',
+                        data: [Math.min({{ p1.average }},100), Math.min({{ p1.strike_rate }},100), Math.min({{ p1.wickets * 2 }},100), Math.max(0,100 - {{ p1.economy * 10 }}), Math.min({{ p1.centuries * 5 }},100), {{ p1.perf_score }}],
+                        backgroundColor: 'rgba(233,69,96,0.2)', borderColor: '#E94560', pointBackgroundColor: '#E94560'
+                    },
+                    {
+                        label: '{{ p2.player_name }}',
+                        data: [Math.min({{ p2.average }},100), Math.min({{ p2.strike_rate }},100), Math.min({{ p2.wickets * 2 }},100), Math.max(0,100 - {{ p2.economy * 10 }}), Math.min({{ p2.centuries * 5 }},100), {{ p2.perf_score }}],
+                        backgroundColor: 'rgba(13,115,119,0.2)', borderColor: '#0D7377', pointBackgroundColor: '#0D7377'
+                    }
+                ]
+            },
+            options: {
+                scales: { r: { ticks: { color: '#A0A0B0', backdropColor: 'transparent' }, grid: { color: '#2A2A4A' }, pointLabels: { color: '#A0A0B0' } } },
+                plugins: { legend: { labels: { color: '#A0A0B0' } } }
+            }
+        });
+    }
+
+    const barCtx = document.getElementById('barChart');
+    if (barCtx) {
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Average', 'Strike Rate', 'Wickets', 'Perf Score'],
+                datasets: [
+                    { label: '{{ p1.player_name }}', data: [{{ p1.average }}, {{ p1.strike_rate }}, {{ p1.wickets }}, {{ p1.perf_score }}], backgroundColor: '#E94560', borderRadius: 4 },
+                    { label: '{{ p2.player_name }}', data: [{{ p2.average }}, {{ p2.strike_rate }}, {{ p2.wickets }}, {{ p2.perf_score }}], backgroundColor: '#0D7377', borderRadius: 4 }
+                ]
+            },
+            options: {
+                plugins: { legend: { labels: { color: '#A0A0B0' } } },
+                scales: { y: { ticks: { color: '#A0A0B0' }, grid: { color: '#2A2A4A' } }, x: { ticks: { color: '#A0A0B0' }, grid: { display: false } } }
+            }
+        });
+    }
+    {% endif %}
 });
 </script>
-{% endif %}
 {% endblock %}

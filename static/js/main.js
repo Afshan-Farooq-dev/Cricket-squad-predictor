@@ -14,9 +14,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- 2. Loading spinner on form submit ---
     document.querySelectorAll('form').forEach(function (form) {
-        form.addEventListener('submit', function () {
-            const overlay = document.getElementById('loadingOverlay');
-            if (overlay) overlay.style.display = 'flex';
+        form.addEventListener('submit', function (e) {
+            // Use setTimeout to allow other 'submit' listeners (like validation)
+            // to run first and potentially call e.preventDefault()
+            setTimeout(function() {
+                if (!e.defaultPrevented) {
+                    const overlay = document.getElementById('loadingOverlay');
+                    if (overlay) overlay.style.display = 'flex';
+                }
+            }, 0);
         });
     });
 
