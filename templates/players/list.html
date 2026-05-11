@@ -113,6 +113,19 @@
                         {% else %}<span class="badge-form-poor">Poor</span>{% endif %}
                     </div>
                     <a href="/players/{{ player.id }}" class="btn btn-outline-custom btn-sm w-100 mt-auto">View Profile</a>
+                    {% if current_user.is_authenticated and current_user.is_admin %}
+                    <div class="d-flex gap-2 mt-2">
+                        <a href="{{ url_for('players.edit_player', player_id=player.id) }}" class="btn btn-warning btn-sm flex-grow-1" style="font-size: 0.75rem;">
+                            <i class="fa-solid fa-edit"></i> Edit
+                        </a>
+                        <form method="POST" action="/players/{{ player.id }}/delete" 
+                              onsubmit="return confirm('Delete this player?');" class="flex-grow-1">
+                            <button class="btn btn-outline-danger btn-sm w-100" style="font-size: 0.75rem;">
+                                <i class="fa-solid fa-trash"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

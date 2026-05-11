@@ -136,3 +136,28 @@ def delete_player(player_id):
     db.session.commit()
     flash('Player deleted.', 'info')
     return redirect(url_for('players.player_list'))
+
+
+@players.route('/players/<int:player_id>/edit', methods=['GET', 'POST'])
+@admin_required
+def edit_player(player_id):
+    player = Player.query.get_or_404(player_id)
+    
+    if request.method == 'POST':
+        # Update editable fields
+        player.matches      = int(request.form.get('matches', player.matches))
+        player.runs         = float(request.form.get('runs', player.runs))
+        player.average      = float(request.form.get('average', player.average))
+        player.strike_rate  = float(request.form.get('strike_rate', player.strike_rate))
+        player.wickets      = int(request.form.get('wickets', player.wickets))
+        player.economy      = float(request.form.get('economy', player.economy))
+        player.centuries    = int(request.form.get('centuries', player.centuries))
+        player.fifties      = int(request.form.get('fifties', player.fifties))
+        player.status       = request.form.get('status', player.status)
+        player.recent_form  = request.form.get('recent_form', player.recent_form)
+        
+        db.session.commit()
+        flash(f'Player {player.player_name} updated successfully.', 'success')
+        return redirect(url_for('players.player_profile', player_id=player.id))
+    
+    return render_template('players/edit_player.html', player=player)
