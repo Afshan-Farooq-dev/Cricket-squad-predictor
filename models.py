@@ -2,6 +2,9 @@ from __init__ import db, login_manager
 from flask_login import UserMixin
 from datetime import datetime
 
+ADMIN_EMAIL = 'admin123@gmail.com'
+ADMIN_USERNAME = 'admin'
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -15,6 +18,10 @@ class User(db.Model, UserMixin):
     password      = db.Column(db.String(200), nullable=False)
     date_joined   = db.Column(db.DateTime, default=datetime.utcnow)
     saved_squads  = db.relationship('SavedSquad', backref='user', lazy=True)
+
+    @property
+    def is_admin(self):
+        return self.username == ADMIN_USERNAME and self.email == ADMIN_EMAIL
 
     def __repr__(self):
         return f'<User {self.username}>'

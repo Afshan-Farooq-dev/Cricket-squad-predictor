@@ -1,202 +1,325 @@
-{% extends "base.html" %}
-{% block title %}{{ player.player_name }} — Player Profile{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}{{ player.player_name }} — Player
+Profile{% endblock %} {% block content %}
 
 <div class="container-fluid px-0">
-    <!-- Hero -->
-    <div class="py-5" style="background: linear-gradient(135deg, #0D0D1A 0%, #1A1A2E 100%); border-bottom: 1px solid #2A2A4A;">
-        <div class="container">
-            <div class="row align-items-center g-4">
-                <div class="col-md-2 text-center">
-                    <img src="https://ui-avatars.com/api/?name={{ player.player_name|replace(' ', '+') }}&background=1A1A2E&color=E94560&size=128&bold=true"
-                         class="rounded-circle border border-3" style="border-color:#E94560 !important; width:120px; height:120px;" alt="{{ player.player_name }}">
-                </div>
-                <div class="col-md-7">
-                    <h2 class="fw-bold text-white mb-1 animate__animated animate__fadeInLeft">{{ player.player_name }}</h2>
-                    <div class="d-flex flex-wrap gap-2 mb-2">
-                        <span class="text-secondary"><i class="fa-solid fa-globe me-1"></i>{{ player.country }}</span>
-                    </div>
-                    <div class="d-flex flex-wrap gap-2">
-                        {% if player.player_role == 'Batsman' %}<span class="badge-role-batsman">Batsman</span>
-                        {% elif player.player_role == 'Bowler' %}<span class="badge-role-bowler">Bowler</span>
-                        {% else %}<span class="badge-role-allrounder">All-Rounder</span>{% endif %}
-                        {% if player.recent_form == 'Good' %}<span class="badge-form-good"><i class="fa-solid fa-arrow-trend-up me-1"></i>Good Form</span>
-                        {% elif player.recent_form == 'Average' %}<span class="badge-form-average">Average Form</span>
-                        {% else %}<span class="badge-form-poor">Poor Form</span>{% endif %}
-                    </div>
-                </div>
-                <div class="col-md-3 text-center">
-                    <div style="background:#E94560; border-radius:50%; width:100px; height:100px; display:flex; flex-direction:column; align-items:center; justify-content:center; margin:0 auto; box-shadow: 0 8px 20px rgba(233,69,96,0.4);">
-                        <span style="font-size:2rem; font-weight:800; color:white; line-height:1;">{{ "%.0f"|format(player.perf_score) }}</span>
-                        <small style="font-size:0.65rem; color:rgba(255,255,255,0.8); text-transform:uppercase;">Score</small>
-                    </div>
-                </div>
-            </div>
+  <!-- Hero -->
+  <div
+    class="py-5"
+    style="
+      background: linear-gradient(135deg, #0d0d1a 0%, #1a1a2e 100%);
+      border-bottom: 1px solid #2a2a4a;
+    "
+  >
+    <div class="container">
+      <div class="row align-items-center g-4">
+        <div class="col-md-2 text-center">
+          <img
+            src="https://ui-avatars.com/api/?name={{ player.player_name|replace(' ', '+') }}&background=1A1A2E&color=E94560&size=128&bold=true"
+            class="rounded-circle border border-3"
+            style="
+              border-color: #e94560 !important;
+              width: 120px;
+              height: 120px;
+            "
+            alt="{{ player.player_name }}"
+          />
         </div>
+        <div class="col-md-7">
+          <h2
+            class="fw-bold text-white mb-1 animate__animated animate__fadeInLeft"
+          >
+            {{ player.player_name }}
+          </h2>
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            <span class="text-secondary"
+              ><i class="fa-solid fa-globe me-1"></i>{{ player.country }}</span
+            >
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            {% if player.player_role == 'Batsman' %}<span
+              class="badge-role-batsman"
+              >Batsman</span
+            >
+            {% elif player.player_role == 'Bowler' %}<span
+              class="badge-role-bowler"
+              >Bowler</span
+            >
+            {% else %}<span class="badge-role-allrounder">All-Rounder</span>{%
+            endif %} {% if player.recent_form == 'Good' %}<span
+              class="badge-form-good"
+              ><i class="fa-solid fa-arrow-trend-up me-1"></i>Good Form</span
+            >
+            {% elif player.recent_form == 'Average' %}<span
+              class="badge-form-average"
+              >Average Form</span
+            >
+            {% else %}<span class="badge-form-poor">Poor Form</span>{% endif %}
+          </div>
+        </div>
+        <div class="col-md-3 text-center">
+          <div
+            style="
+              background: #e94560;
+              border-radius: 50%;
+              width: 100px;
+              height: 100px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              margin: 0 auto;
+              box-shadow: 0 8px 20px rgba(233, 69, 96, 0.4);
+            "
+          >
+            <span
+              style="
+                font-size: 2rem;
+                font-weight: 800;
+                color: white;
+                line-height: 1;
+              "
+              >{{ "%.0f"|format(player.perf_score) }}</span
+            >
+            <small
+              style="
+                font-size: 0.65rem;
+                color: rgba(255, 255, 255, 0.8);
+                text-transform: uppercase;
+              "
+              >Score</small
+            >
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <div class="container py-5">
-    <!-- Stats Row -->
-    <div class="row g-3 mb-5">
-        <div class="col-6 col-md-3">
-            <div class="stat-box">
-                <span class="stat-number">{{ player.matches }}</span>
-                <span class="stat-label"><i class="fa-solid fa-cricket-bat-ball me-1"></i>Matches</span>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-box">
-                <span class="stat-number">{{ player.runs|int }}</span>
-                <span class="stat-label">Runs</span>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-box">
-                <span class="stat-number">{{ "%.1f"|format(player.average) }}</span>
-                <span class="stat-label">Average</span>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-box">
-                <span class="stat-number">{{ player.wickets }}</span>
-                <span class="stat-label"><i class="fa-solid fa-bullseye me-1"></i>Wickets</span>
-            </div>
-        </div>
+  <!-- Stats Row -->
+  <div class="row g-3 mb-5">
+    <div class="col-6 col-md-3">
+      <div class="stat-box">
+        <span class="stat-number">{{ player.matches }}</span>
+        <span class="stat-label"
+          ><i class="fa-solid fa-cricket-bat-ball me-1"></i>Matches</span
+        >
+      </div>
     </div>
-
-    <div class="row g-4 mb-5">
-        <!-- Batting Stats -->
-        {% if player.player_role in ['Batsman', 'All-Rounder'] %}
-        <div class="col-md-6">
-            <div class="card-dark h-100">
-                <h5 class="fw-bold text-white mb-4"><i class="fa-solid fa-cricket-bat-ball text-accent me-2"></i>Batting Stats</h5>
-                <div class="row g-3">
-                    <div class="col-6"><div class="text-secondary small">Centuries</div><div class="fw-bold text-white fs-5">{{ player.centuries }}</div></div>
-                    <div class="col-6"><div class="text-secondary small">Fifties</div><div class="fw-bold text-white fs-5">{{ player.fifties }}</div></div>
-                    <div class="col-6"><div class="text-secondary small">Strike Rate</div><div class="fw-bold text-white fs-5">{{ "%.1f"|format(player.strike_rate) }}</div></div>
-                    <div class="col-6"><div class="text-secondary small">Average</div><div class="fw-bold text-white fs-5">{{ "%.1f"|format(player.average) }}</div></div>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-
-        <!-- Bowling Stats -->
-        {% if player.player_role in ['Bowler', 'All-Rounder'] %}
-        <div class="col-md-6">
-            <div class="card-dark h-100">
-                <h5 class="fw-bold text-white mb-4"><i class="fa-solid fa-bullseye text-accent me-2"></i>Bowling Stats</h5>
-                <div class="row g-3">
-                    <div class="col-6"><div class="text-secondary small">Wickets</div><div class="fw-bold text-white fs-5">{{ player.wickets }}</div></div>
-                    <div class="col-6"><div class="text-secondary small">Economy</div><div class="fw-bold text-white fs-5">{{ "%.2f"|format(player.economy) }}</div></div>
-                    <div class="col-6"><div class="text-secondary small">Bowling Avg</div>
-                    <div class="fw-bold text-white fs-5">{{ "%.1f"|format(player.runs / player.wickets) if player.wickets > 0 else 'N/A' }}</div></div>
-                </div>
-            </div>
-        </div>
-        {% endif %}
+    <div class="col-6 col-md-3">
+      <div class="stat-box">
+        <span class="stat-number">{{ player.runs|int }}</span>
+        <span class="stat-label">Runs</span>
+      </div>
     </div>
-
-    <!-- Charts -->
-    <div class="row g-4 mb-5">
-        <div class="col-md-7">
-            <div class="card-dark">
-                <h5 class="fw-bold text-white mb-4"><i class="fa-solid fa-chart-bar text-accent me-2"></i>Performance Over Last 10 Matches</h5>
-                <canvas id="matchChart" height="120"></canvas>
-            </div>
-        </div>
-        <div class="col-md-5">
-            <div class="card-dark">
-                <h5 class="fw-bold text-white mb-4"><i class="fa-solid fa-star text-accent me-2"></i>Player Radar</h5>
-                <canvas id="radarChart" height="200"></canvas>
-            </div>
-        </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-box">
+        <span class="stat-number">{{ "%.1f"|format(player.average) }}</span>
+        <span class="stat-label">Average</span>
+      </div>
     </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-box">
+        <span class="stat-number">{{ player.wickets }}</span>
+        <span class="stat-label"
+          ><i class="fa-solid fa-bullseye me-1"></i>Wickets</span
+        >
+      </div>
+    </div>
+  </div>
 
-    <!-- Similar Players -->
-    {% if similar %}
-    <h4 class="fw-bold text-white mb-4"><i class="fa-solid fa-users text-accent me-2"></i>Similar Players</h4>
-    <div class="row g-3 mb-5">
-        {% for s in similar %}
-        <div class="col-6 col-md-3">
-            <a href="/players/{{ s.id }}" class="text-decoration-none">
-                <div class="card-dark text-center hover-lift">
-                    <img src="https://ui-avatars.com/api/?name={{ s.player_name|replace(' ','+') }}&background=1A1A2E&color=E94560&size=64&bold=true"
-                         class="rounded-circle border mb-2" style="border-color:#2A2A4A !important; width:56px; height:56px;" alt="{{ s.player_name }}">
-                    <div class="fw-bold text-white small">{{ s.player_name }}</div>
-                    <div class="text-secondary" style="font-size:0.75rem;">{{ s.country }}</div>
-                    <span class="badge-role-{{ s.player_role|lower|replace('-','') }} mt-1" style="font-size:0.65rem;">{{ s.player_role }}</span>
-                </div>
-            </a>
+  <div class="row g-4 mb-5">
+    <!-- Batting Stats -->
+    {% if player.player_role in ['Batsman', 'All-Rounder'] %}
+    <div class="col-md-6">
+      <div class="card-dark h-100">
+        <h5 class="fw-bold text-white mb-4">
+          <i class="fa-solid fa-cricket-bat-ball text-accent me-2"></i>Batting
+          Stats
+        </h5>
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="text-secondary small">Centuries</div>
+            <div class="fw-bold text-white fs-5">{{ player.centuries }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-secondary small">Fifties</div>
+            <div class="fw-bold text-white fs-5">{{ player.fifties }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-secondary small">Strike Rate</div>
+            <div class="fw-bold text-white fs-5">
+              {{ "%.1f"|format(player.strike_rate) }}
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="text-secondary small">Average</div>
+            <div class="fw-bold text-white fs-5">
+              {{ "%.1f"|format(player.average) }}
+            </div>
+          </div>
         </div>
-        {% endfor %}
+      </div>
     </div>
     {% endif %}
 
-    <!-- Actions -->
-    <div class="d-flex gap-3 flex-wrap">
-        <a href="/players/compare?p1={{ player.id }}" class="btn btn-primary-custom px-4 rounded-pill"><i class="fa-solid fa-scale-balanced me-2"></i>Add to Compare</a>
-        <a href="/players" class="btn btn-outline-custom px-4 rounded-pill"><i class="fa-solid fa-arrow-left me-2"></i>All Players</a>
-        {% if current_user.is_authenticated %}
-        <form method="POST" action="/players/{{ player.id }}/delete" onsubmit="return confirm('Delete this player?');" class="ms-auto">
-            <button class="btn btn-sm btn-outline-danger rounded-pill px-4">
-                <i class="fa-solid fa-trash me-1"></i>Delete Player
-            </button>
-        </form>
-        {% endif %}
+    <!-- Bowling Stats -->
+    {% if player.player_role in ['Bowler', 'All-Rounder'] %}
+    <div class="col-md-6">
+      <div class="card-dark h-100">
+        <h5 class="fw-bold text-white mb-4">
+          <i class="fa-solid fa-bullseye text-accent me-2"></i>Bowling Stats
+        </h5>
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="text-secondary small">Wickets</div>
+            <div class="fw-bold text-white fs-5">{{ player.wickets }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-secondary small">Economy</div>
+            <div class="fw-bold text-white fs-5">
+              {{ "%.2f"|format(player.economy) }}
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="text-secondary small">Bowling Avg</div>
+            <div class="fw-bold text-white fs-5">
+              {{ "%.1f"|format(player.runs / player.wickets) if player.wickets >
+              0 else 'N/A' }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+    {% endif %}
+  </div>
+
+  <!-- Charts -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-7">
+      <div class="card-dark">
+        <h5 class="fw-bold text-white mb-4">
+          <i class="fa-solid fa-chart-bar text-accent me-2"></i>Performance Over
+          Last 10 Matches
+        </h5>
+        <canvas id="matchChart" height="120"></canvas>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="card-dark">
+        <h5 class="fw-bold text-white mb-4">
+          <i class="fa-solid fa-star text-accent me-2"></i>Player Radar
+        </h5>
+        <canvas id="radarChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Similar Players -->
+  {% if similar %}
+  <h4 class="fw-bold text-white mb-4">
+    <i class="fa-solid fa-users text-accent me-2"></i>Similar Players
+  </h4>
+  <div class="row g-3 mb-5">
+    {% for s in similar %}
+    <div class="col-6 col-md-3">
+      <a href="/players/{{ s.id }}" class="text-decoration-none">
+        <div class="card-dark text-center hover-lift">
+          <img
+            src="https://ui-avatars.com/api/?name={{ s.player_name|replace(' ','+') }}&background=1A1A2E&color=E94560&size=64&bold=true"
+            class="rounded-circle border mb-2"
+            style="border-color: #2a2a4a !important; width: 56px; height: 56px"
+            alt="{{ s.player_name }}"
+          />
+          <div class="fw-bold text-white small">{{ s.player_name }}</div>
+          <div class="text-secondary" style="font-size: 0.75rem">
+            {{ s.country }}
+          </div>
+          <span
+            class="badge-role-{{ s.player_role|lower|replace('-','') }} mt-1"
+            style="font-size: 0.65rem"
+            >{{ s.player_role }}</span
+          >
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Actions -->
+  <div class="d-flex gap-3 flex-wrap">
+    <a
+      href="/players/compare?p1={{ player.id }}"
+      class="btn btn-primary-custom px-4 rounded-pill"
+      ><i class="fa-solid fa-scale-balanced me-2"></i>Add to Compare</a
+    >
+    <a href="/players" class="btn btn-outline-custom px-4 rounded-pill"
+      ><i class="fa-solid fa-arrow-left me-2"></i>All Players</a
+    >
+    {% if current_user.is_authenticated and current_user.is_admin %}
+    <form
+      method="POST"
+      action="/players/{{ player.id }}/delete"
+      onsubmit="return confirm('Delete this player?');"
+      class="ms-auto"
+    >
+      <button class="btn btn-sm btn-outline-danger rounded-pill px-4">
+        <i class="fa-solid fa-trash me-1"></i>Delete Player
+      </button>
+    </form>
+    {% endif %}
+  </div>
 </div>
 
-{% endblock %}
-
-{% block scripts %}
+{% endblock %} {% block scripts %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Mock match scores
-    const scores = [42, 67, 15, 89, 34, 56, 78, 22, 91, 45];
+  document.addEventListener('DOMContentLoaded', function() {
+      // Mock match scores
+      const scores = [42, 67, 15, 89, 34, 56, 78, 22, 91, 45];
 
-    new Chart(document.getElementById('matchChart'), {
-        type: 'bar',
-        data: {
-            labels: scores.map((_, i) => 'Match ' + (i + 1)),
-            datasets: [{ label: 'Score', data: scores, backgroundColor: '#E94560', borderRadius: 4 }]
-        },
-        options: {
-            plugins: { legend: { display: false } },
-            scales: { y: { ticks: { color: '#A0A0B0' }, grid: { color: '#2A2A4A' } }, x: { ticks: { color: '#A0A0B0' }, grid: { display: false } } }
-        }
-    });
+      new Chart(document.getElementById('matchChart'), {
+          type: 'bar',
+          data: {
+              labels: scores.map((_, i) => 'Match ' + (i + 1)),
+              datasets: [{ label: 'Score', data: scores, backgroundColor: '#E94560', borderRadius: 4 }]
+          },
+          options: {
+              plugins: { legend: { display: false } },
+              scales: { y: { ticks: { color: '#A0A0B0' }, grid: { color: '#2A2A4A' } }, x: { ticks: { color: '#A0A0B0' }, grid: { display: false } } }
+          }
+      });
 
-    new Chart(document.getElementById('radarChart'), {
-        type: 'radar',
-        data: {
-            labels: ['Batting Avg', 'Strike Rate', 'Consistency', 'Form', 'Experience', 'Overall'],
-            datasets: [{
-                label: '{{ player.player_name }}',
-                data: [
-                    Math.min({{ player.average }}, 100),
-                    Math.min({{ player.strike_rate }}, 100),
-                    70,
-                    {% if player.recent_form == 'Good' %}90{% elif player.recent_form == 'Average' %}60{% else %}30{% endif %},
-                    Math.min({{ player.matches }}, 100),
-                    {{ player.perf_score }}
-                ],
-                backgroundColor: 'rgba(233,69,96,0.2)',
-                borderColor: '#E94560',
-                pointBackgroundColor: '#E94560'
-            }]
-        },
-        options: {
-            scales: {
-                r: {
-                    ticks: { color: '#A0A0B0', backdropColor: 'transparent' },
-                    grid: { color: '#2A2A4A' },
-                    pointLabels: { color: '#A0A0B0', font: { size: 11 } }
-                }
-            },
-            plugins: { legend: { labels: { color: '#A0A0B0' } } }
-        }
-    });
-});
+      new Chart(document.getElementById('radarChart'), {
+          type: 'radar',
+          data: {
+              labels: ['Batting Avg', 'Strike Rate', 'Consistency', 'Form', 'Experience', 'Overall'],
+              datasets: [{
+                  label: '{{ player.player_name }}',
+                  data: [
+                      Math.min({{ player.average }}, 100),
+                      Math.min({{ player.strike_rate }}, 100),
+                      70,
+                      {% if player.recent_form == 'Good' %}90{% elif player.recent_form == 'Average' %}60{% else %}30{% endif %},
+                      Math.min({{ player.matches }}, 100),
+                      {{ player.perf_score }}
+                  ],
+                  backgroundColor: 'rgba(233,69,96,0.2)',
+                  borderColor: '#E94560',
+                  pointBackgroundColor: '#E94560'
+              }]
+          },
+          options: {
+              scales: {
+                  r: {
+                      ticks: { color: '#A0A0B0', backdropColor: 'transparent' },
+                      grid: { color: '#2A2A4A' },
+                      pointLabels: { color: '#A0A0B0', font: { size: 11 } }
+                  }
+              },
+              plugins: { legend: { labels: { color: '#A0A0B0' } } }
+          }
+      });
+  });
 </script>
 {% endblock %}

@@ -1,9 +1,22 @@
+from functools import wraps
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_login import login_required
+from flask_login import login_required, current_user
 from __init__ import db
 from models import Player
 
 players = Blueprint('players', __name__)
+
+
+def admin_required(view):
+    @wraps(view)
+    @login_required
+    def wrapped(*args, **kwargs):
+        if not current_user.is_admin:
+            flash('Admin access required to manage players.', 'danger')
+            return redirect(url_for('players.player_list'))
+        return view(*args, **kwargs)
+
+    return wrapped
 
 
 @players.route('/players')
@@ -88,7 +101,7 @@ def top_players():
 
 
 @players.route('/players/new', methods=['GET', 'POST'])
-@login_required
+@admin_required
 def add_player():
     if request.method == 'POST':
         player = Player(
@@ -116,7 +129,7 @@ def add_player():
 
 
 @players.route('/players/<int:player_id>/delete', methods=['POST'])
-@login_required
+@admin_required
 def delete_player(player_id):
     player = Player.query.get_or_404(player_id)
     db.session.delete(player)

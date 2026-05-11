@@ -61,7 +61,7 @@
     <!-- Results Count + Add Button -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <p class="text-secondary mb-0">Showing <strong class="text-white">{{ players|length }}</strong> player{{ 's' if players|length != 1 }}</p>
-        {% if current_user.is_authenticated %}
+        {% if current_user.is_authenticated and current_user.is_admin %}
         <a href="/players/new" class="btn btn-primary-custom btn-sm px-4 rounded-pill">
             <i class="fa-solid fa-plus me-1"></i>Add Player
         </a>
