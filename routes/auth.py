@@ -2,8 +2,17 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
 from __init__ import db, bcrypt
 from models import User, SavedSquad
+import re
 
 auth = Blueprint('auth', __name__)
+
+
+def _clean(value):
+    return (value or '').strip()
+
+
+def _is_valid_email(email):
+    return re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', email) is not None
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
@@ -11,10 +20,30 @@ def register():
         return redirect(url_for('main.home'))
     
     if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
+        username = _clean(request.form.get('username'))
+        email = _clean(request.form.get('email')).lower()
+        password = request.form.get('password') or ''
+        confirm_password = request.form.get('confirm_password') or ''
+
+        if not username or not email or not password or not confirm_password:
+            flash('All fields are required.', 'danger')
+            return redirect(url_for('auth.register'))
+
+        if len(username) < 3:
+            flash('Username must be at least 3 characters.', 'danger')
+            return redirect(url_for('auth.register'))
+
+        if len(username) > 80:
+            flash('Username is too long.', 'danger')
+            return redirect(url_for('auth.register'))
+
+        if len(email) > 120 or not _is_valid_email(email):
+            flash('Please enter a valid email address.', 'danger')
+            return redirect(url_for('auth.register'))
+
+        if len(password) < 6:
+            flash('Password must be at least 6 characters long.', 'danger')
+            return redirect(url_for('auth.register'))
 
         if password != confirm_password:
             flash('Passwords do not match.', 'danger')
@@ -46,9 +75,13 @@ def login():
         return redirect(url_for('main.home'))
         
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
+        email = _clean(request.form.get('email')).lower()
+        password = request.form.get('password') or ''
         remember = True if request.form.get('remember') else False
+
+        if not email or not password:
+            flash('Please enter both email and password.', 'danger')
+            return redirect(url_for('auth.login'))
 
         user = User.query.filter_by(email=email).first()
         if user and bcrypt.check_password_hash(user.password, password):
@@ -78,10 +111,24 @@ def dashboard():
 @login_required
 def settings():
     if request.method == 'POST':
-        form_type = request.form.get('form_type')
+        # Accept both names for compatibility with existing templates/forms
+        form_type = request.form.get('form_type') or request.form.get('action')
         
-        if form_type == 'username':
-            new_username = request.form.get('new_username')
+        if form_type in ('username', 'update_username'):
+            new_username = _clean(request.form.get('new_username') or request.form.get('username'))
+
+            if not new_username:
+                flash('Username cannot be empty.', 'danger')
+                return redirect(url_for('auth.settings'))
+
+            if len(new_username) < 3:
+                flash('Username must be at least 3 characters.', 'danger')
+                return redirect(url_for('auth.settings'))
+
+            if len(new_username) > 80:
+                flash('Username is too long.', 'danger')
+                return redirect(url_for('auth.settings'))
+
             if new_username == current_user.username:
                 flash('You are already using this username.', 'info')
             else:
@@ -94,10 +141,18 @@ def settings():
                     flash('Your username has been updated successfully.', 'success')
             return redirect(url_for('auth.settings'))
 
-        elif form_type == 'password':
-            current_password = request.form.get('current_password')
-            new_password = request.form.get('new_password')
-            confirm_new_password = request.form.get('confirm_new_password')
+        elif form_type in ('password', 'update_password'):
+            current_password = request.form.get('current_password') or ''
+            new_password = request.form.get('new_password') or ''
+            confirm_new_password = request.form.get('confirm_new_password') or request.form.get('confirm_password') or ''
+
+            if not current_password or not new_password or not confirm_new_password:
+                flash('All password fields are required.', 'danger')
+                return redirect(url_for('auth.settings'))
+
+            if len(new_password) < 6:
+                flash('New password must be at least 6 characters long.', 'danger')
+                return redirect(url_for('auth.settings'))
 
             if not bcrypt.check_password_hash(current_user.password, current_password):
                 flash('Incorrect current password.', 'danger')
