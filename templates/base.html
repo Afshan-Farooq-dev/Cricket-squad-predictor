@@ -1,165 +1,228 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Cricket Squad Selector{% endblock %}</title>
 
     <!-- Bootstrap 5 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
     <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <!-- Google Fonts Poppins -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+    />
     <!-- Animate.css -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/main.css') }}"
+    />
     {% block head %}{% endblock %}
-</head>
-<body>
-
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg sticky-top" id="mainNavbar">
-    <div class="container">
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg sticky-top" id="mainNavbar">
+      <div class="container">
         <!-- Brand -->
-        <a class="navbar-brand fw-bold text-white d-flex align-items-center gap-2" href="/">
-            <i class="fa-solid fa-cricket-bat-ball" style="color:#E94560;"></i>
-            Cricket Squad Selector
+        <a
+          class="navbar-brand fw-bold text-white d-flex align-items-center gap-2"
+          href="/"
+        >
+          <i class="fa-solid fa-cricket-bat-ball" style="color: #e94560"></i>
+          Cricket Squad Selector
         </a>
 
         <!-- Mobile Toggler -->
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-            <span class="navbar-toggler-icon"></span>
+        <button
+          class="navbar-toggler border-0"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+        >
+          <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarContent">
-            <!-- Center Links -->
-            <ul class="navbar-nav mx-auto gap-1">
-                <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint == 'main.home' %}nav-active{% endif %}" href="/">
-                        <i class="fa-solid fa-home me-1"></i>Home
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint and 'players' in request.endpoint %}nav-active{% endif %}" href="/players">
-                        <i class="fa-solid fa-user me-1"></i>Players
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint == 'players.compare' %}nav-active{% endif %}" href="/players/compare">
-                        <i class="fa-solid fa-shield me-1"></i>Compare
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint == 'players.top_players' %}nav-active{% endif %}" href="/players/top">
-                        <i class="fa-solid fa-trophy me-1"></i>Top Players
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint and 'analytics' in request.endpoint %}nav-active{% endif %}" href="/analytics/top">
-                        <i class="fa-solid fa-chart-bar me-1"></i>Analytics
-                    </a>
-                </li>
-            </ul>
+          <!-- Center Links -->
+          <ul class="navbar-nav mx-auto gap-1">
+            <li class="nav-item">
+              <a
+                class="nav-link {% if request.endpoint == 'main.home' %}nav-active{% endif %}"
+                href="/"
+              >
+                <i class="fa-solid fa-home me-1"></i>Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {% if request.endpoint and 'players' in request.endpoint %}nav-active{% endif %}"
+                href="/players"
+              >
+                <i class="fa-solid fa-user me-1"></i>Players
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {% if request.endpoint == 'players.compare' %}nav-active{% endif %}"
+                href="/players/compare"
+              >
+                <i class="fa-solid fa-shield me-1"></i>Compare
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {% if request.endpoint == 'players.top_players' %}nav-active{% endif %}"
+                href="/players/top"
+              >
+                <i class="fa-solid fa-trophy me-1"></i>Top Players
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {% if request.endpoint and 'analytics' in request.endpoint %}nav-active{% endif %}"
+                href="/analytics/top"
+              >
+                <i class="fa-solid fa-chart-bar me-1"></i>Analytics
+              </a>
+            </li>
+          </ul>
 
-            <!-- Right Side -->
-            <ul class="navbar-nav gap-2">
-                {% if current_user.is_authenticated %}
-                    <li class="nav-item d-flex align-items-center">
-                        <span class="text-secondary me-2">
-                            <i class="fa-solid fa-user me-1" style="color:#E94560;"></i>
-                            Hi, <span class="text-white fw-semibold">{{ current_user.username }}</span>
-                        </span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-sm btn-outline-custom px-3 rounded-pill" href="/dashboard">
-                            <i class="fa-solid fa-gauge me-1"></i>Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-sm btn-primary-custom px-3 rounded-pill text-white" href="/logout">
-                            <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-sm btn-outline-custom px-3 rounded-pill" href="/login">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-sm btn-primary-custom px-3 rounded-pill text-white" href="/register">Register</a>
-                    </li>
-                {% endif %}
-            </ul>
+          <!-- Right Side -->
+          <ul class="navbar-nav gap-2">
+            {% if current_user.is_authenticated %}
+            <li class="nav-item d-flex align-items-center">
+              <span class="text-secondary me-2">
+                <i class="fa-solid fa-user me-1" style="color: #e94560"></i>
+                Hi,
+                <span class="text-white fw-semibold"
+                  >{{ current_user.username }}</span
+                >
+              </span>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link btn btn-sm btn-outline-custom px-3 rounded-pill"
+                href="/dashboard"
+              >
+                <i class="fa-solid fa-gauge me-1"></i>Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link btn btn-sm btn-primary-custom px-3 rounded-pill text-white"
+                href="/logout"
+              >
+                <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
+              </a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a
+                class="nav-link btn btn-sm btn-outline-custom px-3 rounded-pill"
+                href="/login"
+                >Login</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link btn btn-sm btn-primary-custom px-3 rounded-pill text-white"
+                href="/register"
+                >Register</a
+              >
+            </li>
+            {% endif %}
+          </ul>
         </div>
+      </div>
+    </nav>
+
+    <!-- FLASH MESSAGES -->
+    <div class="container mt-3" id="flash-container">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %} {% set alert_class =
+      'alert-info' %} {% if category == 'success' %}{% set alert_class =
+      'alert-success' %} {% elif category == 'danger' or category == 'error'
+      %}{% set alert_class = 'alert-danger' %} {% elif category == 'warning'
+      %}{% set alert_class = 'alert-warning' %} {% endif %}
+      <div
+        class="alert {{ alert_class }} alert-dismissible fade show shadow-sm animate__animated animate__fadeInDown"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+      {% endfor %} {% endif %} {% endwith %}
     </div>
-</nav>
 
-<!-- FLASH MESSAGES -->
-<div class="container mt-3" id="flash-container">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                {% set alert_class = 'alert-info' %}
-                {% if category == 'success' %}{% set alert_class = 'alert-success' %}
-                {% elif category == 'danger' or category == 'error' %}{% set alert_class = 'alert-danger' %}
-                {% elif category == 'warning' %}{% set alert_class = 'alert-warning' %}
-                {% endif %}
-                <div class="alert {{ alert_class }} alert-dismissible fade show shadow-sm animate__animated animate__fadeInDown" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-</div>
-
-<!-- LOADING SPINNER OVERLAY -->
-<div id="loadingOverlay" style="display:none;">
-    <div class="spinner-border text-danger" style="width:3rem;height:3rem;" role="status">
+    <!-- LOADING SPINNER OVERLAY -->
+    <div id="loadingOverlay" style="display: none">
+      <div
+        class="spinner-border text-danger"
+        style="width: 3rem; height: 3rem"
+        role="status"
+      >
         <span class="visually-hidden">Loading...</span>
+      </div>
     </div>
-</div>
 
-<!-- MAIN CONTENT -->
-<main>
-    {% block content %}{% endblock %}
-</main>
+    <!-- MAIN CONTENT -->
+    <main>{% block content %}{% endblock %}</main>
 
-<!-- FOOTER -->
-<footer class="footer mt-5">
-    <div class="container">
+    <!-- FOOTER -->
+    <footer class="footer mt-5">
+      <div class="container">
         <div class="row align-items-center">
-            <div class="col-md-4 mb-3 mb-md-0">
-                <span class="fw-bold text-white">
-                    <i class="fa-solid fa-cricket-bat-ball me-2" style="color:#E94560;"></i>
-                    Cricket Squad Selector
-                </span>
-                <div class="text-secondary small mt-1">MSc Final Year Project</div>
-            </div>
-            <div class="col-md-4 text-center mb-3 mb-md-0">
-                <a href="/" class="footer-link me-3">Home</a>
-                <a href="/players" class="footer-link me-3">Players</a>
-                <a href="/squad" class="footer-link me-3">Squad</a>
-                <a href="/analytics/top" class="footer-link">Analytics</a>
-            </div>
-            <div class="col-md-4 text-md-end">
-                <span class="text-secondary small">
-                    <i class="fa-brands fa-python me-1"></i>Built with Flask + ML
-                </span>
-            </div>
+          <div class="col-md-4 mb-3 mb-md-0">
+            <span class="fw-bold text-white">
+              <i
+                class="fa-solid fa-cricket-bat-ball me-2"
+                style="color: #e94560"
+              ></i>
+              Cricket Squad Selector
+            </span>
+            <div class="text-secondary small mt-1">MSc Final Year Project</div>
+          </div>
+          <div class="col-md-4 text-center mb-3 mb-md-0">
+            <a href="/" class="footer-link me-3">Home</a>
+            <a href="/players" class="footer-link me-3">Players</a>
+            <a href="/squad" class="footer-link me-3">Squad</a>
+            <a href="/analytics/top" class="footer-link">Analytics</a>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <span class="text-secondary small">
+              <i class="fa-brands fa-python me-1"></i>Built with Flask + ML
+            </span>
+          </div>
         </div>
-        <hr style="border-color: #2A2A4A;">
+        <hr style="border-color: #2a2a4a" />
         <div class="text-center text-secondary small">
-            &copy; 2024 Cricket Squad Selector. All rights reserved.
+          &copy; 2026 Cricket Squad Selector. All rights reserved.
         </div>
-    </div>
-</footer>
+      </div>
+    </footer>
 
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
-{% block scripts %}{% endblock %}
-</body>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+  </body>
 </html>
